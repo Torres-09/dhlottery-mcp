@@ -28,11 +28,24 @@ checksum:
 
 dockers:
   - image_templates:
-      - "ghcr.io/imsehwan/dhlottery-mcp:{{ .Tag }}"
-      - "ghcr.io/imsehwan/dhlottery-mcp:latest"
+      - "ghcr.io/Torres-09/dhlottery-mcp:{{ .Tag }}"
+      - "ghcr.io/Torres-09/dhlottery-mcp:latest"
     dockerfile: Dockerfile
     build_flag_templates:
       - "--platform=linux/amd64"
+
+brews:
+  - name: dhlottery-mcp
+    repository:
+      owner: Torres-09
+      name: homebrew-tap
+    homepage: "https://github.com/Torres-09/dhlottery-mcp"
+    description: "동행복권 로또 6/45 MCP 서버"
+    license: "MIT"
+    install: |
+      bin.install "dhlottery-mcp"
+    test: |
+      system "#{bin}/dhlottery-mcp", "--version"
 
 changelog:
   sort: asc
