@@ -17,22 +17,42 @@ Claude Desktop에서 자연어로 로또 당첨번호를 조회하고, 예치금
 
 ## 설치
 
-### 바이너리 다운로드 (권장)
+### 원클릭 설치 (권장)
 
-[GitHub Releases](https://github.com/imsehwan/dhlottery-mcp/releases)에서 운영체제에 맞는 파일을 다운로드하세요.
+```bash
+curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash
+```
+
+바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
+
+### Homebrew (macOS / Linux)
+
+```bash
+brew install Torres-09/tap/dhlottery-mcp
+```
+
+### go install
+
+```bash
+go install github.com/Torres-09/dhlottery-mcp/cmd/dhlottery-mcp@latest
+```
+
+설치 후 Claude Code에 등록:
+
+```bash
+claude mcp add --scope user -t stdio dhlottery-mcp -- dhlottery-mcp
+```
+
+### 직접 다운로드
+
+[GitHub Releases](https://github.com/Torres-09/dhlottery-mcp/releases)에서 운영체제에 맞는 파일을 다운로드하세요.
 
 ```bash
 # macOS (Apple Silicon)
-curl -L https://github.com/imsehwan/dhlottery-mcp/releases/latest/download/dhlottery-mcp_darwin_arm64.tar.gz | tar xz
+curl -L https://github.com/Torres-09/dhlottery-mcp/releases/latest/download/dhlottery-mcp_darwin_arm64.tar.gz | tar xz
 chmod +x dhlottery-mcp
-```
-
-### 소스에서 빌드
-
-```bash
-git clone https://github.com/imsehwan/dhlottery-mcp
-cd dhlottery-mcp
-go build -o dhlottery-mcp ./cmd/dhlottery-mcp
+mv dhlottery-mcp ~/.local/bin/
+claude mcp add --scope user -t stdio dhlottery-mcp -- ~/.local/bin/dhlottery-mcp
 ```
 
 ### Docker
@@ -41,7 +61,15 @@ go build -o dhlottery-mcp ./cmd/dhlottery-mcp
 docker run --rm -i \
   -e DHLOTTERY_USER_ID=<아이디> \
   -e DHLOTTERY_USER_PW=<비밀번호> \
-  ghcr.io/imsehwan/dhlottery-mcp
+  ghcr.io/Torres-09/dhlottery-mcp
+```
+
+### 소스에서 빌드
+
+```bash
+git clone https://github.com/Torres-09/dhlottery-mcp
+cd dhlottery-mcp
+go build -o dhlottery-mcp ./cmd/dhlottery-mcp
 ```
 
 ## Claude Desktop 설정
