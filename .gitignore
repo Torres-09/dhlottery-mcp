@@ -1,0 +1,17 @@
+# 빌드 바이너리
+/dhlottery-mcp
+/dhlottery-mcp.exe
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 환경 변수
+.env
+.env.*
