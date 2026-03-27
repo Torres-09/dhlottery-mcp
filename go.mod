@@ -1,4 +1,4 @@
-module github.com/imsehwan/dhlottery-mcp
+module github.com/Torres-09/dhlottery-mcp
 
 go 1.25.6
 

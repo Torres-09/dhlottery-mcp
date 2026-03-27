@@ -8,8 +8,8 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 
-	"github.com/imsehwan/dhlottery-mcp/internal/client"
-	"github.com/imsehwan/dhlottery-mcp/internal/config"
+	"github.com/Torres-09/dhlottery-mcp/internal/client"
+	"github.com/Torres-09/dhlottery-mcp/internal/config"
 )
 
 func RegisterBuyLotto(s *server.MCPServer, c *client.Client, cfg *config.Config) {

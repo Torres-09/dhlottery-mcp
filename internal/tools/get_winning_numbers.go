@@ -8,7 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 
-	"github.com/imsehwan/dhlottery-mcp/internal/client"
+	"github.com/Torres-09/dhlottery-mcp/internal/client"
 )
 
 func RegisterGetWinningNumbers(s *server.MCPServer, c *client.Client) {
