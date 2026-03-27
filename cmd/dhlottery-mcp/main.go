@@ -6,14 +6,19 @@ import (
 
 	"github.com/mark3labs/mcp-go/server"
 
-	"github.com/imsehwan/dhlottery-mcp/internal/client"
-	"github.com/imsehwan/dhlottery-mcp/internal/config"
-	"github.com/imsehwan/dhlottery-mcp/internal/tools"
+	"github.com/Torres-09/dhlottery-mcp/internal/client"
+	"github.com/Torres-09/dhlottery-mcp/internal/config"
+	"github.com/Torres-09/dhlottery-mcp/internal/tools"
 )
 
 var version = "dev"
 
 func main() {
+	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
+		fmt.Printf("dhlottery-mcp version %s\n", version)
+		os.Exit(0)
+	}
+
 	cfg := config.Load()
 
 	c, err := client.New(cfg.UserID, cfg.UserPW)
