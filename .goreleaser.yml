@@ -28,8 +28,8 @@ checksum:
 
 dockers:
   - image_templates:
-      - "ghcr.io/Torres-09/dhlottery-mcp:{{ .Tag }}"
-      - "ghcr.io/Torres-09/dhlottery-mcp:latest"
+      - "ghcr.io/torres-09/dhlottery-mcp:{{ .Tag }}"
+      - "ghcr.io/torres-09/dhlottery-mcp:latest"
     dockerfile: Dockerfile
     build_flag_templates:
       - "--platform=linux/amd64"
