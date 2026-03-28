@@ -9,6 +9,25 @@ import (
 	"time"
 )
 
+// validateDateRange는 날짜 형식과 기간(최대 31일)을 검증합니다.
+func validateDateRange(startDate, endDate string) error {
+	start, err := time.Parse("2006-01-02", startDate)
+	if err != nil {
+		return fmt.Errorf("시작일 형식이 올바르지 않습니다 (YYYY-MM-DD): %s", startDate)
+	}
+	end, err := time.Parse("2006-01-02", endDate)
+	if err != nil {
+		return fmt.Errorf("종료일 형식이 올바르지 않습니다 (YYYY-MM-DD): %s", endDate)
+	}
+	if end.Before(start) {
+		return fmt.Errorf("종료일이 시작일보다 앞설 수 없습니다")
+	}
+	if end.Sub(start) > 31*24*time.Hour {
+		return fmt.Errorf("조회 기간은 최대 31일입니다")
+	}
+	return nil
+}
+
 // PurchaseGame은 구매한 게임 정보를 담습니다.
 type PurchaseGame struct {
 	Numbers []int  `json:"numbers"`
@@ -56,6 +75,10 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 	}
 	if endDate == "" {
 		endDate = time.Now().Format("2006-01-02")
+	}
+
+	if err := validateDateRange(startDate, endDate); err != nil {
+		return nil, err
 	}
 
 	// YYYYMMDD 형식으로 변환

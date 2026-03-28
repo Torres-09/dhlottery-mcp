@@ -127,11 +127,28 @@ info "버전: $TAG"
 info "다운로드: $ARCHIVE"
 
 ARCHIVE_PATH="$TMPDIR_WORK/$ARCHIVE"
+CHECKSUMS_PATH="$TMPDIR_WORK/checksums.txt"
+CHECKSUMS_URL="https://github.com/$OWNER/$REPO/releases/download/$TAG/checksums.txt"
+
 download "$DOWNLOAD_URL" "$ARCHIVE_PATH" \
   || die "GitHub에서 바이너리를 다운로드할 수 없습니다. 네트워크를 확인해주세요."
 
+download "$CHECKSUMS_URL" "$CHECKSUMS_PATH" \
+  || die "체크섬 파일을 다운로드할 수 없습니다."
+
+# 체크섬 검증
+if command -v sha256sum &>/dev/null; then
+  (cd "$TMPDIR_WORK" && grep "$ARCHIVE" checksums.txt | sha256sum -c --status) \
+    || die "체크섬 검증 실패: 바이너리가 손상되었거나 변조되었을 수 있습니다."
+elif command -v shasum &>/dev/null; then
+  (cd "$TMPDIR_WORK" && grep "$ARCHIVE" checksums.txt | shasum -a 256 -c --status) \
+    || die "체크섬 검증 실패: 바이너리가 손상되었거나 변조되었을 수 있습니다."
+else
+  warn "sha256sum/shasum을 찾을 수 없어 체크섬 검증을 건너뜁니다."
+fi
+
 tar -xzf "$ARCHIVE_PATH" -C "$TMPDIR_WORK"
-success "다운로드 완료"
+success "다운로드 및 무결성 검증 완료"
 echo ""
 
 # ============================================================

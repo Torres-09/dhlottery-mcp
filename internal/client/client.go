@@ -1,8 +1,10 @@
 package client
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
+	"strings"
 	"time"
 
 	"golang.org/x/net/publicsuffix"
@@ -35,6 +37,16 @@ func New(userID, userPW string) (*Client, error) {
 	httpClient := &http.Client{
 		Jar:     jar,
 		Timeout: 30 * time.Second,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			host := req.URL.Hostname()
+			if !strings.HasSuffix(host, "dhlottery.co.kr") {
+				return fmt.Errorf("리다이렉트 차단: 신뢰할 수 없는 호스트 %s", host)
+			}
+			if len(via) >= 5 {
+				return fmt.Errorf("리다이렉트 횟수 초과")
+			}
+			return nil
+		},
 	}
 
 	return &Client{

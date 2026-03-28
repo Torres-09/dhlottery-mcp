@@ -92,6 +92,13 @@ func RegisterBuyLotto(s *server.MCPServer, c *client.Client, cfg *config.Config)
 				if len(nums) != 6 {
 					return mcp.NewToolResultError(fmt.Sprintf("수동 모드에서 %d번째 세트는 정확히 6개 번호가 필요합니다 (현재: %d개)", i+1, len(nums))), nil
 				}
+				seen := make(map[int]bool, 6)
+				for _, n := range nums {
+					if seen[n] {
+						return mcp.NewToolResultError(fmt.Sprintf("%d번째 세트에 중복 번호가 있습니다: %d", i+1, n)), nil
+					}
+					seen[n] = true
+				}
 			}
 		}
 
