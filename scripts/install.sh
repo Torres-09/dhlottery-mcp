@@ -56,6 +56,27 @@ fetch() {
   fi
 }
 
+# ============================================================
+# 인자 파싱
+# ============================================================
+USER_ID=""
+USER_PW=""
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --id)   USER_ID="$2"; shift 2 ;;
+    --pw)   USER_PW="$2"; shift 2 ;;
+    --help|-h)
+      echo "Usage: install.sh [--id <동행복권_아이디>] [--pw <동행복권_비밀번호>]"
+      echo ""
+      echo "  --id  동행복권 아이디 (생략 시 나중에 직접 설정)"
+      echo "  --pw  동행복권 비밀번호 (생략 시 나중에 직접 설정)"
+      exit 0
+      ;;
+    *) die "알 수 없는 옵션: $1" ;;
+  esac
+done
+
 echo ""
 echo -e "${BOLD}dhlottery-mcp 설치 스크립트${RESET}"
 echo "=========================="
@@ -176,14 +197,24 @@ if [ -f "$DESKTOP_CONFIG" ]; then
 
   # jq가 있으면 jq로 편집
   if command -v jq &>/dev/null; then
-    # 이미 등록되어 있으면 스킵
+    # 이미 등록되어 있으면 자격증명만 업데이트
     if jq -e '.mcpServers.dhlottery' "$DESKTOP_CONFIG" &>/dev/null; then
-      warn "Claude Desktop에 이미 dhlottery-mcp가 등록되어 있습니다."
-      UPDATED=true
+      if [ -n "$USER_ID" ] || [ -n "$USER_PW" ]; then
+        NEW_JSON="$(jq \
+          --arg id "$USER_ID" --arg pw "$USER_PW" \
+          '.mcpServers.dhlottery.env.DHLOTTERY_USER_ID = $id | .mcpServers.dhlottery.env.DHLOTTERY_USER_PW = $pw' \
+          "$DESKTOP_CONFIG")" \
+          && echo "$NEW_JSON" > "$DESKTOP_CONFIG" \
+          && UPDATED=true \
+          || true
+      else
+        warn "Claude Desktop에 이미 dhlottery-mcp가 등록되어 있습니다."
+        UPDATED=true
+      fi
     else
       NEW_JSON="$(jq \
-        --arg path "$BINARY_PATH" \
-        '.mcpServers.dhlottery = {"command": $path, "env": {"DHLOTTERY_USER_ID": "", "DHLOTTERY_USER_PW": ""}}' \
+        --arg path "$BINARY_PATH" --arg id "$USER_ID" --arg pw "$USER_PW" \
+        '.mcpServers.dhlottery = {"command": $path, "env": {"DHLOTTERY_USER_ID": $id, "DHLOTTERY_USER_PW": $pw}}' \
         "$DESKTOP_CONFIG")" \
         && echo "$NEW_JSON" > "$DESKTOP_CONFIG" \
         && UPDATED=true \
@@ -193,11 +224,13 @@ if [ -f "$DESKTOP_CONFIG" ]; then
 
   # jq 없으면 python3으로 편집
   if [ "$UPDATED" = false ] && command -v python3 &>/dev/null; then
-    python3 - "$DESKTOP_CONFIG" "$BINARY_PATH" <<'PYEOF'
+    python3 - "$DESKTOP_CONFIG" "$BINARY_PATH" "$USER_ID" "$USER_PW" <<'PYEOF'
 import sys, json
 
 config_path = sys.argv[1]
 binary_path = sys.argv[2]
+user_id     = sys.argv[3]
+user_pw     = sys.argv[4]
 
 with open(config_path, 'r') as f:
     config = json.load(f)
@@ -209,10 +242,14 @@ if 'dhlottery' not in config['mcpServers']:
     config['mcpServers']['dhlottery'] = {
         'command': binary_path,
         'env': {
-            'DHLOTTERY_USER_ID': '',
-            'DHLOTTERY_USER_PW': ''
+            'DHLOTTERY_USER_ID': user_id,
+            'DHLOTTERY_USER_PW': user_pw
         }
     }
+else:
+    if user_id or user_pw:
+        config['mcpServers']['dhlottery']['env']['DHLOTTERY_USER_ID'] = user_id
+        config['mcpServers']['dhlottery']['env']['DHLOTTERY_USER_PW'] = user_pw
 
 with open(config_path, 'w') as f:
     json.dump(config, f, indent=2, ensure_ascii=False)
@@ -223,8 +260,12 @@ PYEOF
 
   if [ "$UPDATED" = true ]; then
     success "Claude Desktop에 등록 완료"
-    info "  → 계정 정보 설정: $DESKTOP_CONFIG"
-    info "     DHLOTTERY_USER_ID와 DHLOTTERY_USER_PW에 동행복권 계정 정보를 입력하세요."
+    if [ -z "$USER_ID" ]; then
+      info "  → 계정 정보 설정: $DESKTOP_CONFIG"
+      info "     DHLOTTERY_USER_ID와 DHLOTTERY_USER_PW에 동행복권 계정 정보를 입력하세요."
+    else
+      info "  → 계정 정보가 설정되었습니다."
+    fi
     REGISTERED_ANY=true
   else
     warn "Claude Desktop JSON 편집에 실패했습니다. 수동으로 설정해주세요."
@@ -242,9 +283,11 @@ echo -e "${GREEN}${BOLD}설치가 완료되었습니다!${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "당첨번호 조회 등 로그인 불필요 기능은 바로 사용 가능합니다."
-echo "구매 기능을 사용하려면 동행복권 계정 정보를 설정하세요."
-if [ -f "$DESKTOP_CONFIG" ]; then
-  echo ""
-  echo -e "  ${YELLOW}→${RESET} $DESKTOP_CONFIG"
+if [ -z "$USER_ID" ]; then
+  echo "구매 기능을 사용하려면 동행복권 계정 정보를 설정하세요."
+  if [ -f "$DESKTOP_CONFIG" ]; then
+    echo ""
+    echo -e "  ${YELLOW}→${RESET} $DESKTOP_CONFIG"
+  fi
 fi
 echo ""

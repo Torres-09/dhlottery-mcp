@@ -25,11 +25,17 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 
 ### 원클릭 설치 (권장)
 
+바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
+
+**계정 정보 없이 설치** (나중에 직접 설정):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash
 ```
 
-바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
+**계정 정보 포함하여 설치** (한 번에 완료):
+```bash
+curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash -s -- --id <아이디> --pw <비밀번호>
+```
 
 ### Homebrew (macOS / Linux)
 
