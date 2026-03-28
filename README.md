@@ -1,10 +1,14 @@
 # dhlottery-mcp
 
-동행복권 로또 6/45 MCP(Model Context Protocol) 서버 — Go 구현
+[![Go Version](https://img.shields.io/github/go-mod/go-version/Torres-09/dhlottery-mcp)](https://go.dev/)
+[![Release](https://img.shields.io/github/v/release/Torres-09/dhlottery-mcp)](https://github.com/Torres-09/dhlottery-mcp/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Claude Desktop에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확인하고, 복권을 구매할 수 있습니다.
+동행복권 로또 6/45 MCP(Model Context Protocol) 서버 — Go 단일 바이너리, Playwright 불필요
 
-## 기능
+Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확인하고, 복권을 구매할 수 있습니다.
+
+## 주요 기능
 
 | Tool | 설명 | 로그인 필요 |
 |------|------|:----------:|
@@ -14,6 +18,8 @@ Claude Desktop에서 자연어로 로또 당첨번호를 조회하고, 예치금
 | `get_balance` | 예치금 잔액 조회 | ✅ |
 | `buy_lotto` | 로또 6/45 구매 (자동/수동/반자동) | ✅ |
 | `get_purchase_history` | 인터넷 구매 내역 조회 | ✅ |
+
+> `get_winning_numbers`, `get_latest_round`, `check_numbers`는 계정 설정 없이 바로 사용 가능합니다.
 
 ## 설치
 
@@ -72,6 +78,19 @@ cd dhlottery-mcp
 go build -o dhlottery-mcp ./cmd/dhlottery-mcp
 ```
 
+## 사용 예시
+
+Claude에게 자연어로 요청하세요:
+
+```
+1216회 당첨번호 알려줘
+이번 주 로또 몇 회차야?
+내 번호 [3, 13, 20, 29, 37, 42]가 1216회에 몇 등인지 확인해줘
+로또 자동으로 1게임 사줘
+내 예치금 잔액 얼마야?
+최근 구매 내역 보여줘
+```
+
 ## Claude Desktop 설정
 
 `~/Library/Application Support/Claude/claude_desktop_config.json`에 추가:
@@ -90,20 +109,20 @@ go build -o dhlottery-mcp ./cmd/dhlottery-mcp
 }
 ```
 
-> 로그인이 필요 없는 도구(`get_winning_numbers`, `get_latest_round`, `check_numbers`)는 `env` 없이도 동작합니다.
+## Claude Code 설정
 
-## 사용 예시
-
-Claude에게 자연어로 요청하세요:
-
+```bash
+claude mcp add --scope user -t stdio dhlottery-mcp -- /path/to/dhlottery-mcp
 ```
-1216회 당첨번호 알려줘
-이번 주 로또 몇 회차야?
-내 번호 [3, 13, 20, 29, 37, 42]가 1216회에 몇 등인지 확인해줘
-로또 자동으로 1게임 사줘
-내 예치금 잔액 얼마야?
-최근 구매 내역 보여줘
-```
+
+## 환경변수
+
+| 변수 | 설명 | 필수 |
+|------|------|:----:|
+| `DHLOTTERY_USER_ID` | 동행복권 아이디 | 로그인 필요 기능만 |
+| `DHLOTTERY_USER_PW` | 동행복권 비밀번호 | 로그인 필요 기능만 |
+
+로그인이 필요 없는 도구(`get_winning_numbers`, `get_latest_round`, `check_numbers`)는 환경변수 없이도 바로 사용 가능합니다.
 
 ## 구매 관련 안내
 
