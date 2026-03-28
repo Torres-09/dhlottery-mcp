@@ -99,7 +99,7 @@ TAG="$(fetch "$API_URL" 2>/dev/null \
 [ -z "$TAG" ] && die "GitHub에서 버전 정보를 찾을 수 없습니다."
 
 VERSION="${TAG#v}"
-ARCHIVE="${BINARY}_${VERSION}_${OS}_${ARCH}.tar.gz"
+ARCHIVE="${BINARY}_${OS}_${ARCH}.tar.gz"
 DOWNLOAD_URL="https://github.com/$OWNER/$REPO/releases/download/$TAG/$ARCHIVE"
 
 info "버전: $TAG"
