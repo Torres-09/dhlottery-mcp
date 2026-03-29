@@ -51,6 +51,27 @@ type buyParam struct {
 
 var slotNames = []string{"A", "B", "C", "D", "E"}
 
+const gamePageURL = "https://ol.dhlottery.co.kr/olotto/game/game645.do"
+
+// visitGamePage는 구매 전 게임 페이지를 방문해 ol.dhlottery.co.kr 세션 쿠키를 설정합니다.
+func (c *Client) visitGamePage() error {
+	req, err := http.NewRequest(http.MethodGet, gamePageURL, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+	req.Header.Set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
+	req.Header.Set("Referer", "https://www.dhlottery.co.kr/")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return err
+	}
+	resp.Body.Close()
+	return nil
+}
+
 // BuyLotto는 로또를 구매합니다.
 func (c *Client) BuyLotto(round int, games []BuyGame) (*BuyResult, error) {
 	if err := c.EnsureLoggedIn(); err != nil {
@@ -59,6 +80,11 @@ func (c *Client) BuyLotto(round int, games []BuyGame) (*BuyResult, error) {
 
 	if len(games) == 0 || len(games) > 5 {
 		return nil, fmt.Errorf("게임 수는 1~5개 사이여야 합니다 (입력: %d개)", len(games))
+	}
+
+	// 구매 전 게임 페이지 방문 — ol.dhlottery.co.kr 세션 쿠키 설정
+	if err := c.visitGamePage(); err != nil {
+		return nil, fmt.Errorf("게임 페이지 접근 실패: %w", err)
 	}
 
 	params := make([]buyParam, len(games))
@@ -112,9 +138,12 @@ func (c *Client) BuyLotto(round int, games []BuyGame) (*BuyResult, error) {
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
+	req.Header.Set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
 	req.Header.Set("Connection", "keep-alive")
 	req.Header.Set("Origin", "https://ol.dhlottery.co.kr")
 	req.Header.Set("Referer", "https://ol.dhlottery.co.kr/olotto/game/game645.do")
+	req.Header.Set("X-Requested-With", "XMLHttpRequest")
 
 	resp, err := c.http.Do(req)
 	if err != nil {
