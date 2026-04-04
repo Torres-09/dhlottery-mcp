@@ -14,7 +14,7 @@ import (
 
 func RegisterGetPurchaseHistory(s *server.MCPServer, c *client.Client, cfg *config.Config) {
 	tool := mcp.NewTool("get_purchase_history",
-		mcp.WithDescription("로또 구매 내역을 조회합니다. 로그인이 필요합니다. 인터넷(PC/웹) 구매 내역만 조회되며, 모바일 앱 구매 내역은 포함되지 않습니다. 최대 조회 기간은 31일입니다."),
+		mcp.WithDescription("로또 구매/당첨 내역을 조회합니다. 로그인이 필요합니다. 인터넷(PC/웹) 구매 내역만 조회되며, 모바일 앱 구매 내역은 포함되지 않습니다. 최대 조회 기간은 31일입니다. 중요: 추첨이 완료된 회차만 조회됩니다. 이번 주 토요일 추첨 예정인 구매 내역은 추첨 후에 조회 가능합니다."),
 		mcp.WithString("start_date",
 			mcp.Description("조회 시작일 (YYYY-MM-DD 형식, 기본: 30일 전)"),
 		),
@@ -47,6 +47,7 @@ func RegisterGetPurchaseHistory(s *server.MCPServer, c *client.Client, cfg *conf
 		}
 		output := map[string]interface{}{
 			"purchases": purchases,
+			"note":      "추첨이 완료된 회차의 내역만 조회됩니다. 이번 주 토요일 추첨 예정인 구매 내역은 추첨 후 조회 가능합니다.",
 		}
 
 		jsonBytes, err := json.MarshalIndent(output, "", "  ")

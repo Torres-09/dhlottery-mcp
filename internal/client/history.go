@@ -28,30 +28,40 @@ func validateDateRange(startDate, endDate string) error {
 	return nil
 }
 
-// PurchaseGame은 구매한 게임 정보를 담습니다.
-type PurchaseGame struct {
-	Numbers []int  `json:"numbers"`
-	Mode    string `json:"mode"`
+// TicketGame은 티켓 내 개별 게임(슬롯) 정보를 담습니다.
+type TicketGame struct {
+	Slot    string `json:"slot"`    // A, B, C, D, E
+	Numbers []int  `json:"numbers"` // 선택 번호
+	Mode    string `json:"mode"`    // auto, manual, semi
 }
 
 // Purchase는 구매 내역을 담습니다.
 type Purchase struct {
-	Date     string         `json:"date"`
-	Round    int            `json:"round"`
-	Games    []PurchaseGame `json:"games"`
-	Amount   int64          `json:"amount"`
-	WinResult string        `json:"win_result,omitempty"`
-	GameInfo string         `json:"game_info,omitempty"`
+	Date      string       `json:"date"`
+	DrawDate  string       `json:"draw_date,omitempty"`
+	Round     int          `json:"round"`
+	GameName  string       `json:"game_name,omitempty"`
+	WinResult string       `json:"win_result,omitempty"`
+	WinRank   *int         `json:"win_rank,omitempty"`
+	WinAmount *int64       `json:"win_amount,omitempty"`
+	WinNums   []int        `json:"win_numbers,omitempty"` // 당첨번호 (추첨 후)
+	Games     []TicketGame `json:"games,omitempty"`
+	OrderNo   string       `json:"order_no,omitempty"`
 }
 
 type ledgerItem struct {
 	LtGdsCd    string `json:"ltGdsCd"`
+	LtGdsNm    string `json:"ltGdsNm"`
 	LtEpsd     int    `json:"ltEpsd"`
+	LtEpsdView string `json:"ltEpsdView"`
 	GmInfo     string `json:"gmInfo"`
 	NtslOrdrNo string `json:"ntslOrdrNo"`
 	LtWnResult string `json:"ltWnResult"`
-	NtslDt     string `json:"ntslDt"`
-	NtslAmt    int64  `json:"ntslAmt"`
+	EltOrdrDt  string `json:"eltOrdrDt"`
+	EpsdRflDt  string `json:"epsdRflDt"`
+	PrchsQty   int    `json:"prchsQty"`
+	WnRnk      *int   `json:"wnRnk"`
+	LtWnAmt    *int64 `json:"ltWnAmt"`
 }
 
 type ledgerAPIResponse struct {
@@ -61,6 +71,94 @@ type ledgerAPIResponse struct {
 		Total int          `json:"total"`
 		List  []ledgerItem `json:"list"`
 	} `json:"data"`
+}
+
+type ticketGameDetail struct {
+	Idx  string `json:"idx"`  // A, B, C, D, E
+	Num  []int  `json:"num"`
+	Rank int    `json:"rank"`
+	Amt  int64  `json:"amt"`
+	Type int    `json:"type"` // 1=수동, 2=반자동, 3=자동
+}
+
+type ticketDetailResponse struct {
+	ResultCode interface{} `json:"resultCode"`
+	Data       struct {
+		Ticket struct {
+			GameRound   int                `json:"game_round"`
+			SaleDate    string             `json:"sale_date"`
+			DrawDate    string             `json:"draw_date"`
+			Drawed      bool               `json:"drawed"`
+			WinNum      []int              `json:"win_num"`
+			WinTotalAmt int64              `json:"win_total_amt"`
+			GameDtl     []ticketGameDetail `json:"game_dtl"`
+		} `json:"ticket"`
+	} `json:"data"`
+}
+
+// getTicketDetail은 티켓 상세(번호 포함)를 조회합니다.
+func (c *Client) getTicketDetail(ntslOrdrNo, barcd, srchStrDt, srchEndDt string) ([]TicketGame, []int, error) {
+	params := url.Values{
+		"ntslOrdrNo": {ntslOrdrNo},
+		"barcd":      {barcd},
+		"srchStrDt":  {srchStrDt},
+		"srchEndDt":  {srchEndDt},
+	}
+	req, err := http.NewRequest(http.MethodGet,
+		wwwBaseURL+"/mypage/lotto645TicketDetail.do?"+params.Encode(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("X-Requested-With", "XMLHttpRequest")
+	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
+	req.Header.Set("AJAX", "true")
+	req.Header.Set("Referer", wwwBaseURL+"/mypage/lotto645Ticket")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var detail ticketDetailResponse
+	if err := json.Unmarshal(body, &detail); err != nil {
+		return nil, nil, err
+	}
+
+	modeMap := map[int]string{1: "manual", 2: "semi", 3: "auto"}
+	var games []TicketGame
+	for _, g := range detail.Data.Ticket.GameDtl {
+		mode := modeMap[g.Type]
+		if mode == "" {
+			mode = "auto"
+		}
+		games = append(games, TicketGame{
+			Slot:    g.Idx,
+			Numbers: g.Num,
+			Mode:    mode,
+		})
+	}
+
+	winNums := detail.Data.Ticket.WinNum
+	// 추첨 전이면 당첨번호가 모두 0 → nil로 반환
+	allZero := true
+	for _, n := range winNums {
+		if n != 0 {
+			allZero = false
+			break
+		}
+	}
+	if allZero {
+		winNums = nil
+	}
+
+	return games, winNums, nil
 }
 
 // GetPurchaseHistory는 구매 내역을 조회합니다.
@@ -81,29 +179,28 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 		return nil, err
 	}
 
-	// YYYYMMDD 형식으로 변환
 	startFormatted := formatDateParam(startDate)
 	endFormatted := formatDateParam(endDate)
 
 	params := url.Values{
 		"srchStrDt":          {startFormatted},
 		"srchEndDt":          {endFormatted},
-		"sort":               {"1"},
-		"ltGdsCd":            {"LO40"}, // 로또 6/45
+		"sort":               {""},
+		"ltGdsCd":            {""},
 		"winResult":          {""},
+		"lramSmam":           {""},
 		"pageNum":            {"1"},
 		"recordCountPerPage": {"50"},
 	}
 
-	apiURL := wwwBaseURL + "/mypage/selectMyLotteryledger.do?" + params.Encode()
-
-	req, err := http.NewRequest(http.MethodGet, apiURL, nil)
+	req, err := http.NewRequest(http.MethodGet,
+		wwwBaseURL+"/mypage/selectMyLotteryledger.do?"+params.Encode(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("요청 생성 실패: %w", err)
 	}
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("X-Requested-With", "XMLHttpRequest")
-	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
 	req.Header.Set("AJAX", "true")
 	req.Header.Set("Referer", wwwBaseURL+"/mypage/mylotteryledger")
 
@@ -133,15 +230,27 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 
 	var purchases []Purchase
 	for _, item := range apiResp.Data.List {
-		date := formatDate(item.NtslDt)
-		purchases = append(purchases, Purchase{
-			Date:      date,
+		p := Purchase{
+			Date:      item.EltOrdrDt,
+			DrawDate:  item.EpsdRflDt,
 			Round:     item.LtEpsd,
-			Games:     []PurchaseGame{},
-			Amount:    item.NtslAmt,
+			GameName:  item.LtGdsNm,
 			WinResult: item.LtWnResult,
-			GameInfo:  item.GmInfo,
-		})
+			WinRank:   item.WnRnk,
+			WinAmount: item.LtWnAmt,
+			OrderNo:   item.NtslOrdrNo,
+		}
+
+		// 로또6/45 티켓만 번호 조회
+		if item.LtGdsCd == "LO40" && item.GmInfo != "" {
+			games, winNums, err := c.getTicketDetail(item.NtslOrdrNo, item.GmInfo, startFormatted, endFormatted)
+			if err == nil {
+				p.Games = games
+				p.WinNums = winNums
+			}
+		}
+
+		purchases = append(purchases, p)
 	}
 
 	return purchases, nil
@@ -149,11 +258,9 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 
 // formatDateParam은 "2006-01-02" 형식을 "20060102" 형식으로 변환합니다.
 func formatDateParam(s string) string {
-	// 이미 YYYYMMDD 형식이면 그대로 반환
 	if len(s) == 8 {
 		return s
 	}
-	// YYYY-MM-DD 형식이면 하이픈 제거
 	if len(s) == 10 && s[4] == '-' {
 		return s[:4] + s[5:7] + s[8:]
 	}
