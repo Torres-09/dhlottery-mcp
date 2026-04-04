@@ -55,7 +55,7 @@ type lt645APIResponse struct {
 
 // GetWinningNumbers는 특정 회차의 당첨번호를 조회합니다.
 func (c *Client) GetWinningNumbers(round int) (*WinningNumbers, error) {
-	url := fmt.Sprintf("%s/lt645/selectPstLt645InfoNew.do?srchDir=center&srchLtEpsd=%d", baseURL, round)
+	url := fmt.Sprintf("%s/lt645/selectPstLt645InfoNew.do?srchDir=center&srchLtEpsd=%d", wwwBaseURL, round)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -65,7 +65,7 @@ func (c *Client) GetWinningNumbers(round int) (*WinningNumbers, error) {
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
 	req.Header.Set("X-Requested-With", "XMLHttpRequest")
-	req.Header.Set("Referer", "https://dhlottery.co.kr/lt645/result")
+	req.Header.Set("Referer", wwwBaseURL+"/lt645/result")
 
 	resp, err := c.http.Do(req)
 	if err != nil {
@@ -125,7 +125,7 @@ func (c *Client) GetLatestRound() (*LatestRound, error) {
 
 // fetchLatestRoundFromHTML는 결과 페이지 HTML의 드롭다운에서 최신 회차를 파싱합니다.
 func (c *Client) fetchLatestRoundFromHTML() (int, error) {
-	req, err := http.NewRequest(http.MethodGet, baseURL+"/lt645/result", nil)
+	req, err := http.NewRequest(http.MethodGet, wwwBaseURL+"/lt645/result", nil)
 	if err != nil {
 		return 0, fmt.Errorf("요청 생성 실패: %w", err)
 	}

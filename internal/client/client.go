@@ -19,10 +19,10 @@ const (
 
 // Client는 동행복권 HTTP 클라이언트입니다.
 type Client struct {
-	http       *http.Client
-	loggedIn   bool
-	userID     string
-	userPW     string
+	http     *http.Client
+	loggedIn bool
+	userID   string
+	userPW   string
 }
 
 // New는 새로운 Client를 생성합니다.
@@ -55,4 +55,3 @@ func New(userID, userPW string) (*Client, error) {
 		userPW: userPW,
 	}, nil
 }
-
