@@ -62,6 +62,32 @@ func main() {
 			"X-Requested-With": "XMLHttpRequest", "AJAX": "true",
 			"Referer": "https://www.dhlottery.co.kr/mypage/mylotteryledger",
 		}))
+
+	// 4. 게임 페이지 확인 (구매용 ol 도메인)
+	fmt.Println("[4] 게임 페이지 (ol.dhlottery.co.kr) 확인...")
+	gameHTML := get(hc, "https://ol.dhlottery.co.kr/olotto/game/game645.do", map[string]string{
+		"Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+		"Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+		"Referer":         "https://www.dhlottery.co.kr/",
+	})
+	// curRound 관련 텍스트 추출
+	reCurRound := regexp.MustCompile(`(?i)(curRound|cur_round|curEpsd|currentRound)[^>]*>([^<]{0,30})`)
+	reInputRound := regexp.MustCompile(`(?i)id="(curRound|ROUND_DRAW_DATE|WAMT_PAY_TLMT_END_DT)"[^>]*value="([^"]*)"`)
+	fmt.Println("    curRound 관련 태그:")
+	for _, m := range reCurRound.FindAllStringSubmatch(gameHTML, 5) {
+		fmt.Printf("      %s\n", m[0])
+	}
+	fmt.Println("    input value 관련 태그:")
+	for _, m := range reInputRound.FindAllStringSubmatch(gameHTML, 10) {
+		fmt.Printf("      id=%s value=%s\n", m[1], m[2])
+	}
+	// HTML 앞 500자 출력 (리다이렉트 여부 확인)
+	snippet := gameHTML
+	if len(snippet) > 500 {
+		snippet = snippet[:500]
+	}
+	fmt.Println("    HTML 앞 500자:")
+	fmt.Println(snippet)
 }
 
 func login(hc *http.Client, userID, userPW string) error {
