@@ -27,14 +27,28 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 
 바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
 
-**계정 정보 없이 설치** (나중에 직접 설정):
+**macOS / Linux**
+
+계정 정보 없이 설치 (나중에 직접 설정):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash
 ```
 
-**계정 정보 포함하여 설치** (한 번에 완료):
+계정 정보 포함하여 설치 (한 번에 완료):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash -s -- --id <아이디> --pw <비밀번호>
+```
+
+**Windows (PowerShell)**
+
+계정 정보 없이 설치 (나중에 직접 설정):
+```powershell
+irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1 | iex
+```
+
+계정 정보 포함하여 설치 (한 번에 완료):
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1))) -Id <아이디> -Pw <비밀번호>
 ```
 
 ### Homebrew (macOS / Linux)
@@ -65,6 +79,14 @@ curl -L https://github.com/Torres-09/dhlottery-mcp/releases/latest/download/dhlo
 chmod +x dhlottery-mcp
 mv dhlottery-mcp ~/.local/bin/
 claude mcp add --scope user -t stdio dhlottery-mcp -- ~/.local/bin/dhlottery-mcp
+```
+
+```powershell
+# Windows (PowerShell)
+Invoke-WebRequest -Uri https://github.com/Torres-09/dhlottery-mcp/releases/latest/download/dhlottery-mcp_windows_amd64.zip -OutFile dhlottery-mcp.zip
+Expand-Archive dhlottery-mcp.zip .
+# dhlottery-mcp.exe를 PATH가 있는 디렉토리로 이동 후:
+claude mcp add --scope user -t stdio dhlottery-mcp -- C:\path\to\dhlottery-mcp.exe
 ```
 
 ### Docker
@@ -99,7 +121,12 @@ Claude에게 자연어로 요청하세요:
 
 ## Claude Desktop 설정
 
-`~/Library/Application Support/Claude/claude_desktop_config.json`에 추가:
+설정 파일 위치:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+아래 내용을 추가하세요:
 
 ```json
 {
