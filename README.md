@@ -1,6 +1,6 @@
 # dhlottery-mcp
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/Torres-09/dhlottery-mcp)](https://go.dev/)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/Torres-09/dhlottery-mcp?branch=main)](https://go.dev/)
 [![Release](https://img.shields.io/github/v/release/Torres-09/dhlottery-mcp)](https://github.com/Torres-09/dhlottery-mcp/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
