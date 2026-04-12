@@ -84,7 +84,11 @@ func (c *Client) parseBalanceJSON(resp *http.Response) (*Balance, error) {
 
 	var apiResp userMndpResponse
 	if err := json.Unmarshal(body, &apiResp); err != nil {
-		return nil, fmt.Errorf("예치금 응답 파싱 실패: %w", err)
+		snippet := string(body)
+		if len(snippet) > 300 {
+			snippet = snippet[:300]
+		}
+		return nil, fmt.Errorf("예치금 응답 파싱 실패: %w\n응답: %s", err, snippet)
 	}
 
 	return &Balance{Amount: apiResp.Data.UserMndp.TotalAmt}, nil

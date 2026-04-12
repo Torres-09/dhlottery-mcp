@@ -210,6 +210,15 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 	}
 	defer resp.Body.Close()
 
+	// 세션 만료 감지: 로그인 페이지로 리다이렉트된 경우
+	if resp.Request.URL.Path == "/login" || resp.Request.URL.Path == "/errorPage" {
+		c.InvalidateSession()
+		if err := c.Login(); err != nil {
+			return nil, err
+		}
+		return c.GetPurchaseHistory(startDate, endDate)
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("응답 읽기 실패: %w", err)
@@ -217,7 +226,11 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 
 	var apiResp ledgerAPIResponse
 	if err := json.Unmarshal(body, &apiResp); err != nil {
-		return nil, fmt.Errorf("구매내역 응답 파싱 실패: %w", err)
+		snippet := string(body)
+		if len(snippet) > 300 {
+			snippet = snippet[:300]
+		}
+		return nil, fmt.Errorf("구매내역 응답 파싱 실패: %w\n응답: %s", err, snippet)
 	}
 
 	if apiResp.ResultCode != nil {
