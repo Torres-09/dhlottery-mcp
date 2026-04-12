@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // BuyGame은 구매할 게임 설정을 담습니다.
@@ -71,7 +72,16 @@ type gamePageInfo struct {
 	WamtPayTlmtEndDt string
 }
 
+// computeRoundDrawDate는 회차 번호로부터 추첨일(토요일)을 계산합니다.
+// 1회차 추첨일: 2002년 12월 7일 (토)
+func computeRoundDrawDate(round int) string {
+	base := time.Date(2002, 12, 7, 0, 0, 0, 0, time.Local)
+	drawDate := base.AddDate(0, 0, (round-1)*7)
+	return drawDate.Format("20060102")
+}
+
 // visitGamePage는 구매 전 ol.dhlottery.co.kr 세션을 설정하고 페이지 정보를 추출합니다.
+// curRound를 찾지 못해도 에러를 반환하지 않습니다 — 호출자가 round를 직접 관리합니다.
 func (c *Client) visitGamePage() (*gamePageInfo, error) {
 	req, err := http.NewRequest(http.MethodGet, gamePageURL, nil)
 	if err != nil {
@@ -93,14 +103,44 @@ func (c *Client) visitGamePage() (*gamePageInfo, error) {
 	}
 
 	html := string(body)
-	info := &gamePageInfo{
-		CurRound:         extractElementText(html, "curRound"),
-		RoundDrawDate:    extractInputValue(html, "ROUND_DRAW_DATE"),
-		WamtPayTlmtEndDt: extractInputValue(html, "WAMT_PAY_TLMT_END_DT"),
+
+	// 세션 만료 감지: ol 도메인이 www 세션을 인식하지 못한 경우
+	if strings.Contains(html, "세션이 해제") || strings.Contains(html, "sessionExpired") {
+		// 재로그인 후 1회 재시도
+		c.InvalidateSession()
+		if err := c.Login(); err != nil {
+			return nil, fmt.Errorf("ol 세션 만료 후 재로그인 실패: %w", err)
+		}
+		req2, err := http.NewRequest(http.MethodGet, gamePageURL, nil)
+		if err != nil {
+			return nil, err
+		}
+		req2.Header.Set("User-Agent", userAgent)
+		req2.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		req2.Header.Set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
+		req2.Header.Set("Referer", wwwBaseURL+"/")
+		resp2, err := c.http.Do(req2)
+		if err != nil {
+			return nil, err
+		}
+		defer resp2.Body.Close()
+		body2, err := io.ReadAll(resp2.Body)
+		if err != nil {
+			return nil, err
+		}
+		html = string(body2)
 	}
 
-	if info.CurRound == "" {
-		return nil, fmt.Errorf("게임 페이지에서 회차 정보를 찾을 수 없습니다")
+	// curRound: 텍스트 요소 → input value 순으로 시도
+	curRound := extractElementText(html, "curRound")
+	if curRound == "" {
+		curRound = extractInputValue(html, "curRound")
+	}
+
+	info := &gamePageInfo{
+		CurRound:         curRound,
+		RoundDrawDate:    extractInputValue(html, "ROUND_DRAW_DATE"),
+		WamtPayTlmtEndDt: extractInputValue(html, "WAMT_PAY_TLMT_END_DT"),
 	}
 
 	return info, nil
@@ -156,11 +196,19 @@ func (c *Client) BuyLotto(round int, games []BuyGame) (*BuyResult, error) {
 
 	// round가 0이면 페이지에서 추출한 회차 사용
 	if round == 0 {
+		if pageInfo.CurRound == "" {
+			return nil, fmt.Errorf("게임 페이지에서 회차 정보를 찾을 수 없습니다")
+		}
 		r, err := strconv.Atoi(pageInfo.CurRound)
 		if err != nil {
 			return nil, fmt.Errorf("회차 변환 실패: %w", err)
 		}
 		round = r
+	}
+
+	// ROUND_DRAW_DATE: 페이지에서 못 찾으면 회차 번호로부터 계산
+	if pageInfo.RoundDrawDate == "" {
+		pageInfo.RoundDrawDate = computeRoundDrawDate(round)
 	}
 
 	// 2단계: 접속자 대기 토큰 획득
