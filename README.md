@@ -106,6 +106,44 @@ cd dhlottery-mcp
 go build -o dhlottery-mcp ./cmd/dhlottery-mcp
 ```
 
+## 제거
+
+### 원클릭 제거 (권장)
+
+**macOS / Linux**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/uninstall.sh | bash
+```
+
+**Windows (PowerShell)**
+
+```powershell
+irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/uninstall.ps1 | iex
+```
+
+### Homebrew
+
+```bash
+brew uninstall Torres-09/tap/dhlottery-mcp
+claude mcp remove "dhlottery-mcp" -s user
+```
+
+> Homebrew는 바이너리만 제거합니다. Claude Code/Desktop MCP 등록은 위 명령어로 별도 해제해야 합니다.
+
+### 수동 제거
+
+```bash
+# 바이너리 삭제
+rm -f ~/.local/bin/dhlottery-mcp
+
+# Claude Code MCP 해제
+claude mcp remove "dhlottery-mcp" -s user
+
+# Claude Desktop 설정에서 dhlottery 항목 직접 삭제
+# 설정 파일 위치는 아래 'Claude Desktop 설정' 섹션 참고
+```
+
 ## 사용 예시
 
 Claude에게 자연어로 요청하세요:
