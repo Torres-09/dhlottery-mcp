@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dhlottery-mcp 설치</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-subtle: #f6f8fa;
+      --bg-card: #ffffff;
+      --border: #d0d7de;
+      --border-strong: #afb8c1;
+      --text: #1f2328;
+      --text-muted: #57606a;
+      --text-link: #0969da;
+      --accent: #0969da;
+      --accent-hover: #0860ca;
+      --success: #1a7f37;
+      --warning-bg: #fff8c5;
+      --warning-border: #d4a72c;
+      --warning-text: #633c01;
+      --info-bg: #ddf4ff;
+      --info-border: #54aeff;
+      --info-text: #0550ae;
+      --os-btn-bg: #f6f8fa;
+      --os-btn-border: #d0d7de;
+      --os-btn-active: #0969da;
+      --os-btn-active-text: #ffffff;
+      --code-bg: #f6f8fa;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --bg-subtle: #161b22;
+        --bg-card: #161b22;
+        --border: #30363d;
+        --border-strong: #484f58;
+        --text: #e6edf3;
+        --text-muted: #8b949e;
+        --text-link: #58a6ff;
+        --accent: #58a6ff;
+        --accent-hover: #79b8ff;
+        --success: #3fb950;
+        --warning-bg: #2d2208;
+        --warning-border: #9e6a03;
+        --warning-text: #e3b341;
+        --info-bg: #051d4d;
+        --info-border: #1f6feb;
+        --info-text: #79c0ff;
+        --os-btn-bg: #21262d;
+        --os-btn-border: #30363d;
+        --os-btn-active: #1f6feb;
+        --os-btn-active-text: #e6edf3;
+        --code-bg: #161b22;
+        --shadow: 0 1px 3px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      min-width: 800px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .logo-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .header-links {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+    }
+    .header-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .header-links a:hover { color: var(--text-link); }
+
+    /* ── Main layout ─────────────────────────────────────────── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 40px 60px;
+    }
+
+    /* ── Step card ───────────────────────────────────────────── */
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+    .step-badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .step-body {
+      padding: 20px;
+    }
+
+    /* ── OS buttons ──────────────────────────────────────────── */
+    .os-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .os-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 20px;
+      min-width: 130px;
+      background: var(--os-btn-bg);
+      border: 1.5px solid var(--os-btn-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .os-btn:hover {
+      border-color: var(--accent);
+      background: var(--info-bg);
+    }
+    .os-btn.active {
+      border-color: var(--os-btn-active);
+      background: var(--os-btn-active);
+      color: var(--os-btn-active-text);
+    }
+    .os-btn .os-emoji { font-size: 22px; line-height: 1; }
+    .os-btn .os-name { font-weight: 600; }
+    .os-btn .os-arch { font-size: 11px; opacity: 0.75; }
+
+    /* ── Form inputs ─────────────────────────────────────────── */
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .input-wrap {
+      flex: 1;
+      position: relative;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(9,105,218,.15); }
+    .input-wrap input::placeholder { color: var(--text-muted); }
+    .toggle-pw {
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 15px; padding: 2px;
+      line-height: 1;
+    }
+    .toggle-pw:hover { color: var(--text); }
+    .input-wrap.has-toggle input { padding-right: 34px; }
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Download section ────────────────────────────────────── */
+    .download-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--bg-subtle);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { background: var(--bg); border-color: var(--border-strong); }
+
+    /* ── Install guide ───────────────────────────────────────── */
+    .install-guide { display: none; }
+    .install-guide.visible { display: block; }
+
+    .guide-steps {
+      counter-reset: guide-step;
+      list-style: none;
+    }
+    .guide-steps li {
+      counter-increment: guide-step;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .guide-steps li::before {
+      content: counter(guide-step);
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .guide-steps li .step-content { flex: 1; }
+    .guide-steps li .step-label {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .guide-steps li .step-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+      font-size: 12.5px;
+      color: var(--text);
+      margin-top: 6px;
+      overflow-x: auto;
+      position: relative;
+    }
+    .copy-snippet {
+      position: absolute;
+      top: 6px; right: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: inherit;
+    }
+    .copy-snippet:hover { color: var(--text); border-color: var(--border-strong); }
+
+    /* ── Callout ─────────────────────────────────────────────── */
+    .callout {
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+    .callout-warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+    .callout-info {
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+      color: var(--info-text);
+    }
+    .callout strong { display: block; margin-bottom: 6px; }
+    .callout pre.code-block {
+      background: rgba(0,0,0,.05);
+      border-color: rgba(0,0,0,.08);
+      color: inherit;
+      margin-top: 8px;
+    }
+
+    /* ── Security / footer ───────────────────────────────────── */
+    .security-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+    .security-box h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .security-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px 40px 30px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-link); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Version badge ───────────────────────────────────────── */
+    .version-tag {
+      display: inline-block;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    /* ── Toast ───────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #323232;
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 9999;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">🎱</div>
+  <div class="logo-text">
+    <h1>dhlottery-mcp</h1>
+    <p>Claude에서 자연어로 로또를 구매하고 당첨번호를 확인하세요</p>
+  </div>
+  <div class="header-links">
+    <span id="version-display" class="version-tag">버전 확인 중…</span>
+    <a href="https://github.com/Torres-09/dhlottery-mcp" target="_blank">
+      ⭐ GitHub
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Step 1: OS 선택 -->
+  <div class="step-card">
+    <div class="step-header">
+      <span class="step-badge">STEP 1</span>
+      <span class="step-title">운영체제 선택</span>
+    </div>
+    <div class="step-body">
+      <div class="os-buttons">
+        <button class="os-btn" data-os="darwin_arm64" onclick="selectOS(this)">
+          <span class="os-emoji">🍎</span>
+          <span class="os-name">macOS</span>
+          <span class="os-arch">Apple Silicon (M1·M2·M3)</span>
+        </button>
+        <button class="os-btn" data-os="darwin_amd64" onclick="selectOS(this)">
+          <span class="os-emoji">🍎</span>
+          <span class="os-name">macOS</span>
+          <span class="os-arch">Intel (x86_64)</span>
+        </button>
+        <button class="os-btn" data-os="linux_amd64" onclick="selectOS(this)">
+          <span class="os-emoji">🐧</span>
+          <span class="os-name">Linux</span>
+          <span class="os-arch">x86_64</span>
+        </button>
+        <button class="os-btn" data-os="windows_amd64" onclick="selectOS(this)">
+          <span class="os-emoji">🪟</span>
+          <span class="os-name">Windows</span>
+          <span class="os-arch">x86_64</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: 계정 정보 -->
+  <div class="step-card">
+    <div class="step-header">
+      <span class="step-badge">STEP 2</span>
+      <span class="step-title">계정 정보 입력 <span style="font-weight:400;font-size:13px;color:var(--text-muted)">(선택 사항)</span></span>
+    </div>
+    <div class="step-body">
+      <div class="form-row">
+        <div class="input-wrap">
+          <input type="text" id="userId" placeholder="동행복권 아이디" autocomplete="username">
+        </div>
+        <div class="input-wrap has-toggle">
+          <input type="password" id="userPw" placeholder="동행복권 비밀번호" autocomplete="current-password">
+          <button class="toggle-pw" onclick="togglePw()" title="비밀번호 표시/숨김" type="button">👁</button>
+        </div>
+      </div>
+      <p class="form-hint">
+        🔒 입력한 정보는 서버로 전송되지 않으며, 설정 파일 생성에만 사용됩니다.<br>
+        입력하지 않아도 당첨번호 조회 등은 바로 사용할 수 있습니다.
+      </p>
+    </div>
+  </div>
+
+  <!-- Step 3: 다운로드 -->
+  <div class="step-card">
+    <div class="step-header">
+      <span class="step-badge">STEP 3</span>
+      <span class="step-title">바이너리 다운로드 &amp; 설정 파일 생성</span>
+    </div>
+    <div class="step-body">
+
+      <div class="download-row">
+        <a id="btn-download-binary" class="btn-primary" href="#" onclick="downloadBinary(event)">
+          ⬇ 바이너리 다운로드
+        </a>
+        <button class="btn-secondary" onclick="downloadConfig()">
+          📄 설정 파일 생성 및 다운로드
+        </button>
+      </div>
+
+      <!-- macOS guide -->
+      <div id="guide-darwin_arm64" class="install-guide">
+        <ol class="guide-steps">
+          <li>
+            <div class="step-content">
+              <div class="step-label">압축 해제</div>
+              <div class="step-desc">다운로드한 <code>dhlottery-mcp_darwin_arm64.tar.gz</code> 를 더블클릭하거나 아래 명령어로 해제하세요.</div>
+              <pre class="code-block">tar xzf dhlottery-mcp_darwin_arm64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">바이너리 이동</div>
+              <pre class="code-block">mkdir -p ~/.local/bin
+mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">PATH 확인 (필요한 경우)</div>
+              <div class="step-desc"><code>~/.local/bin</code>이 PATH에 없다면 셸 설정 파일에 추가하세요.</div>
+              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일 다운로드 (STEP 3 버튼)</div>
+              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼을 클릭하면 <code>claude_desktop_config.json</code>이 다운로드됩니다.</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일을 Claude 설정 폴더에 복사</div>
+              <div class="step-desc">기존 파일이 없다면 아래 명령어를 실행하세요.</div>
+              <pre class="code-block">mkdir -p ~/Library/Application\ Support/Claude
+cp ~/Downloads/claude_desktop_config.json ~/Library/Application\ Support/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">경로 교체</div>
+              <div class="step-desc"><code>claude_desktop_config.json</code> 안의 <code>YOUR_HOME_PATH</code> 부분을 실제 홈 경로로 바꾸세요.</div>
+              <pre class="code-block">sed -i '' "s|YOUR_HOME_PATH|$HOME|g" ~/Library/Application\ Support/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
+              <div class="step-desc">메뉴바에서 완전히 종료(Cmd+Q)한 뒤 다시 실행하세요.</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- macOS Intel (same steps, different filename) -->
+      <div id="guide-darwin_amd64" class="install-guide">
+        <ol class="guide-steps">
+          <li>
+            <div class="step-content">
+              <div class="step-label">압축 해제</div>
+              <pre class="code-block">tar xzf dhlottery-mcp_darwin_amd64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">바이너리 이동</div>
+              <pre class="code-block">mkdir -p ~/.local/bin
+mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">PATH 확인 (필요한 경우)</div>
+              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일 다운로드 후 Claude 설정 폴더에 복사</div>
+              <pre class="code-block">mkdir -p ~/Library/Application\ Support/Claude
+cp ~/Downloads/claude_desktop_config.json ~/Library/Application\ Support/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">경로 교체</div>
+              <pre class="code-block">sed -i '' "s|YOUR_HOME_PATH|$HOME|g" ~/Library/Application\ Support/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Linux guide -->
+      <div id="guide-linux_amd64" class="install-guide">
+        <ol class="guide-steps">
+          <li>
+            <div class="step-content">
+              <div class="step-label">압축 해제</div>
+              <pre class="code-block">tar xzf dhlottery-mcp_linux_amd64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">바이너리 이동</div>
+              <pre class="code-block">mkdir -p ~/.local/bin
+mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">PATH 확인 (필요한 경우)</div>
+              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일 다운로드 후 Claude 설정 폴더에 복사</div>
+              <pre class="code-block">mkdir -p ~/.config/Claude
+cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">경로 교체</div>
+              <pre class="code-block">sed -i "s|YOUR_HOME_PATH|$HOME|g" ~/.config/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Windows guide -->
+      <div id="guide-windows_amd64" class="install-guide">
+        <ol class="guide-steps">
+          <li>
+            <div class="step-content">
+              <div class="step-label">압축 해제</div>
+              <div class="step-desc">다운로드한 <code>dhlottery-mcp_windows_amd64.zip</code>을 우클릭 → "모두 압축 풀기"</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">바이너리 이동</div>
+              <div class="step-desc">압축을 푼 <code>dhlottery-mcp.exe</code>를 원하는 위치로 이동합니다.</div>
+              <pre class="code-block">%LOCALAPPDATA%\Programs\dhlottery-mcp\<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일 위치 확인</div>
+              <div class="step-desc">아래 경로의 폴더가 없다면 만들어 주세요.</div>
+              <pre class="code-block">%APPDATA%\Claude\<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">설정 파일 복사 및 경로 편집</div>
+              <div class="step-desc">다운로드한 <code>claude_desktop_config.json</code>을 <code>%APPDATA%\Claude\</code>에 복사한 뒤, 텍스트 편집기로 열어 <code>YOUR_HOME_PATH</code>를 실제 경로로 교체하세요.</div>
+              <pre class="code-block">C:\Users\사용자명\AppData\Local\Programs\dhlottery-mcp\dhlottery-mcp.exe<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+            </div>
+          </li>
+          <li>
+            <div class="step-content">
+              <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
+              <div class="step-desc">트레이 아이콘 우클릭 → 종료 후 다시 실행하세요.</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- 기존 설정 파일 callout -->
+      <div id="callout-merge" class="callout callout-warning" style="display:none;">
+        <strong>⚠️ 기존 claude_desktop_config.json이 있다면?</strong>
+        다운로드한 파일로 덮어쓰면 기존 MCP 서버 설정이 사라집니다.
+        기존 파일의 <code>"mcpServers"</code> 안에 아래 항목만 추가하세요.
+        <pre class="code-block" id="merge-snippet">{  }<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 보안 고지 -->
+  <div class="security-box">
+    <h3>🔒 보안 안내</h3>
+    <p>입력한 계정 정보(아이디/비밀번호)는 서버로 전송되지 않습니다.</p>
+    <p>설정 파일 생성은 브라우저 내에서만 처리됩니다.</p>
+    <br>
+    <h3>⚠️ 법적 고지</h3>
+    <p>이 도구는 동행복권의 공식 API를 사용하지 않으며, 비공식 HTTP 요청 기반으로 동작합니다.</p>
+    <p>사용에 따른 모든 책임은 사용자에게 있습니다.</p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://github.com/Torres-09/dhlottery-mcp">Torres-09/dhlottery-mcp</a>
+  &nbsp;·&nbsp; MIT License
+  &nbsp;·&nbsp; 동행복권 공식 서비스가 아닙니다
+</footer>
+
+<div id="toast"></div>
+
+<script>
+  // ── State ─────────────────────────────────────────────────────────────
+  let selectedOS = null;
+  let latestVersion = null;
+  const REPO = 'Torres-09/dhlottery-mcp';
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  (async function init() {
+    detectOS();
+    await fetchLatestVersion();
+  })();
+
+  // ── OS Detection ──────────────────────────────────────────────────────
+  function detectOS() {
+    const ua = navigator.userAgent.toLowerCase();
+    let detected;
+    if (ua.includes('win')) {
+      detected = 'windows_amd64';
+    } else if (ua.includes('mac')) {
+      // Apple Silicon 감지: userAgentData or heuristic
+      const isAppleSilicon =
+        (navigator.userAgentData && navigator.userAgentData.platform === 'macOS' &&
+         window.matchMedia('(max-device-pixel-ratio: 2)').matches) ||
+        ua.includes('arm') || ua.includes('aarch');
+      detected = isAppleSilicon ? 'darwin_arm64' : 'darwin_amd64';
+    } else {
+      detected = 'linux_amd64';
+    }
+    const btn = document.querySelector(`[data-os="${detected}"]`);
+    if (btn) selectOS(btn);
+  }
+
+  function selectOS(btn) {
+    document.querySelectorAll('.os-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedOS = btn.dataset.os;
+
+    // 설치 가이드 표시
+    document.querySelectorAll('.install-guide').forEach(g => g.classList.remove('visible'));
+    const guide = document.getElementById('guide-' + selectedOS);
+    if (guide) guide.classList.add('visible');
+
+    // merge callout 표시
+    document.getElementById('callout-merge').style.display = 'block';
+    updateMergeSnippet();
+    updateDownloadButton();
+  }
+
+  // ── GitHub API ────────────────────────────────────────────────────────
+  async function fetchLatestVersion() {
+    const display = document.getElementById('version-display');
+    try {
+      const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+        headers: { Accept: 'application/vnd.github+json' }
+      });
+      if (!res.ok) throw new Error('API error');
+      const data = await res.json();
+      latestVersion = data.tag_name; // e.g. "v1.2.0"
+      display.textContent = latestVersion;
+      updateDownloadButton();
+    } catch {
+      latestVersion = null;
+      display.textContent = '버전 조회 실패';
+      display.title = 'GitHub API 호출에 실패했습니다. Releases 페이지를 직접 확인하세요.';
+    }
+  }
+
+  function getBinaryFilename() {
+    if (!selectedOS) return null;
+    const ext = selectedOS.startsWith('windows') ? '.zip' : '.tar.gz';
+    return `dhlottery-mcp_${selectedOS}${ext}`;
+  }
+
+  function updateDownloadButton() {
+    const btn = document.getElementById('btn-download-binary');
+    if (!selectedOS) {
+      btn.textContent = '⬇ OS를 먼저 선택하세요';
+      btn.href = '#';
+      return;
+    }
+    const filename = getBinaryFilename();
+    if (latestVersion) {
+      const url = `https://github.com/${REPO}/releases/download/${latestVersion}/${filename}`;
+      btn.href = url;
+      btn.innerHTML = `⬇ 바이너리 다운로드 <span style="opacity:.8;font-size:12px">(${latestVersion})</span>`;
+    } else {
+      btn.href = `https://github.com/${REPO}/releases/latest`;
+      btn.textContent = '⬇ GitHub Releases에서 다운로드';
+      btn.target = '_blank';
+    }
+  }
+
+  function downloadBinary(e) {
+    if (!selectedOS) {
+      e.preventDefault();
+      showToast('OS를 먼저 선택해 주세요.');
+      return;
+    }
+    if (!latestVersion) {
+      // href already points to releases/latest, let it open
+    }
+  }
+
+  // ── Config generation ─────────────────────────────────────────────────
+  function buildConfig() {
+    // NOTE: 입력값은 이 함수 내에서만 사용되며 서버로 전송되지 않습니다.
+    const userId = document.getElementById('userId').value.trim();
+    const userPw = document.getElementById('userPw').value;
+
+    let binaryPath;
+    if (selectedOS && selectedOS.startsWith('windows')) {
+      binaryPath = 'YOUR_HOME_PATH\\AppData\\Local\\Programs\\dhlottery-mcp\\dhlottery-mcp.exe';
+    } else {
+      binaryPath = 'YOUR_HOME_PATH/.local/bin/dhlottery-mcp';
+    }
+
+    return {
+      mcpServers: {
+        dhlottery: {
+          command: binaryPath,
+          env: {
+            DHLOTTERY_USER_ID: userId,
+            DHLOTTERY_USER_PW: userPw
+          }
+        }
+      }
+    };
+  }
+
+  function downloadConfig() {
+    if (!selectedOS) {
+      showToast('OS를 먼저 선택해 주세요.');
+      return;
+    }
+
+    const config = buildConfig();
+    const content = JSON.stringify(config, null, 2);
+
+    // 브라우저 내에서만 파일 생성 — 서버 전송 없음
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'claude_desktop_config.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('설정 파일이 다운로드되었습니다.');
+    updateMergeSnippet();
+  }
+
+  function updateMergeSnippet() {
+    const config = buildConfig();
+    const entry = config.mcpServers.dhlottery;
+    const snippet = `"dhlottery": ${JSON.stringify(entry, null, 2)}`;
+    const pre = document.getElementById('merge-snippet');
+    // preserve the copy button
+    const btn = pre.querySelector('button');
+    pre.textContent = snippet;
+    pre.appendChild(btn);
+  }
+
+  // ── UI helpers ────────────────────────────────────────────────────────
+  function togglePw() {
+    const input = document.getElementById('userPw');
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  function copySnippet(btn) {
+    const pre = btn.parentElement;
+    // text content without the button label
+    const text = Array.from(pre.childNodes)
+      .filter(n => n.nodeType === Node.TEXT_NODE)
+      .map(n => n.textContent)
+      .join('');
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      const original = btn.textContent;
+      btn.textContent = '✓';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>

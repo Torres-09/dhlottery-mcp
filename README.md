@@ -23,6 +23,14 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 
 ## 설치
 
+### 🌐 웹 인스톨러 (비개발자 추천)
+
+터미널 없이 브라우저만으로 설치할 수 있습니다.
+
+👉 **[https://torres-09.github.io/dhlottery-mcp](https://torres-09.github.io/dhlottery-mcp)**
+
+---
+
 ### 원클릭 설치 (권장)
 
 바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
