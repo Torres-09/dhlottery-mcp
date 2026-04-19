@@ -4,157 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>dhlottery-mcp 설치</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #ffffff;
-      --bg-subtle: #f6f8fa;
-      --bg-card: #ffffff;
-      --border: #d0d7de;
-      --border-strong: #afb8c1;
-      --text: #1f2328;
-      --text-muted: #57606a;
-      --text-link: #0969da;
-      --accent: #0969da;
-      --accent-hover: #0860ca;
-      --success: #1a7f37;
-      --warning-bg: #fff8c5;
-      --warning-border: #d4a72c;
-      --warning-text: #633c01;
-      --info-bg: #ddf4ff;
-      --info-border: #54aeff;
-      --info-text: #0550ae;
-      --os-btn-bg: #f6f8fa;
-      --os-btn-border: #d0d7de;
-      --os-btn-active: #0969da;
-      --os-btn-active-text: #ffffff;
-      --code-bg: #f6f8fa;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0d1117;
-        --bg-subtle: #161b22;
-        --bg-card: #161b22;
-        --border: #30363d;
-        --border-strong: #484f58;
-        --text: #e6edf3;
-        --text-muted: #8b949e;
-        --text-link: #58a6ff;
-        --accent: #58a6ff;
-        --accent-hover: #79b8ff;
-        --success: #3fb950;
-        --warning-bg: #2d2208;
-        --warning-border: #9e6a03;
-        --warning-text: #e3b341;
-        --info-bg: #051d4d;
-        --info-border: #1f6feb;
-        --info-text: #79c0ff;
-        --os-btn-bg: #21262d;
-        --os-btn-border: #30363d;
-        --os-btn-active: #1f6feb;
-        --os-btn-active-text: #e6edf3;
-        --code-bg: #161b22;
-        --shadow: 0 1px 3px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
-      }
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       font-size: 14px;
       line-height: 1.6;
-      color: var(--text);
-      background: var(--bg);
+      color: #222222;
+      background: #F7F7F7;
       min-width: 800px;
     }
 
-    /* ── Header ─────────────────────────────────────────────── */
+    /* ── Header ──────────────────────────────────────────────── */
     header {
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--border);
+      background: #FFFFFF;
+      border-bottom: 1px solid #E0E0E0;
       padding: 20px 40px;
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .logo-icon {
-      font-size: 28px;
-      line-height: 1;
-    }
+    .logo-icon { font-size: 28px; line-height: 1; }
     .logo-text h1 {
       font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
+      color: #222222;
     }
     .logo-text p {
       font-size: 13px;
-      color: var(--text-muted);
+      color: #666666;
       margin-top: 2px;
     }
     .header-links {
       margin-left: auto;
       display: flex;
       gap: 12px;
+      align-items: center;
     }
     .header-links a {
-      color: var(--text-muted);
+      color: #666666;
       text-decoration: none;
       font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
-    .header-links a:hover { color: var(--text-link); }
+    .header-links a:hover { color: #E8001D; }
+    .version-badge {
+      background: #F7F7F7;
+      border: 1px solid #E0E0E0;
+      border-radius: 2px;
+      padding: 2px 8px;
+      font-size: 12px;
+      color: #666666;
+      font-family: monospace;
+    }
 
-    /* ── Main layout ─────────────────────────────────────────── */
+    /* ── Main ────────────────────────────────────────────────── */
     main {
       max-width: 900px;
       margin: 0 auto;
-      padding: 32px 40px 60px;
+      padding: 24px 16px 60px;
     }
 
     /* ── Step card ───────────────────────────────────────────── */
     .step-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      margin-bottom: 16px;
     }
     .step-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: var(--bg-subtle);
-      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      padding: 12px 20px;
+      background: #F2F2F2;
+      border-bottom: 1px solid #E0E0E0;
+      border-radius: 4px 4px 0 0;
     }
     .step-badge {
-      background: var(--accent);
-      color: #fff;
-      border-radius: 20px;
-      padding: 2px 10px;
+      background: #E8001D;
+      color: #FFFFFF;
+      border-radius: 2px;
+      padding: 2px 8px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.5px;
-      white-space: nowrap;
     }
     .step-title {
       font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
+      color: #222222;
     }
     .step-body {
-      padding: 20px;
+      padding: 20px 24px;
     }
 
     /* ── OS buttons ──────────────────────────────────────────── */
     .os-buttons {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .os-btn {
@@ -162,35 +112,35 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      padding: 12px 20px;
+      padding: 14px 20px;
       min-width: 130px;
-      background: var(--os-btn-bg);
-      border: 1.5px solid var(--os-btn-border);
-      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.15s;
-      color: var(--text);
+      color: #222222;
       font-size: 13px;
       font-family: inherit;
+      transition: border-color 0.1s, background 0.1s;
     }
     .os-btn:hover {
-      border-color: var(--accent);
-      background: var(--info-bg);
+      border-color: #E8001D;
+      background: #FFF0F2;
     }
     .os-btn.active {
-      border-color: var(--os-btn-active);
-      background: var(--os-btn-active);
-      color: var(--os-btn-active-text);
+      border-color: #E8001D;
+      background: #E8001D;
+      color: #FFFFFF;
     }
-    .os-btn .os-emoji { font-size: 22px; line-height: 1; }
-    .os-btn .os-name { font-weight: 600; }
+    .os-btn .os-icon { width: 24px; height: 24px; display: block; }
+    .os-btn .os-name { font-weight: 700; font-size: 13px; }
     .os-btn .os-arch { font-size: 11px; opacity: 0.75; }
 
     /* ── Form inputs ─────────────────────────────────────────── */
     .form-row {
       display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     .input-wrap {
       flex: 1;
@@ -199,76 +149,80 @@
     .input-wrap input {
       width: 100%;
       padding: 8px 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
+      background: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      border-radius: 4px;
+      color: #222222;
       font-size: 14px;
       font-family: inherit;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.1s;
     }
-    .input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(9,105,218,.15); }
-    .input-wrap input::placeholder { color: var(--text-muted); }
+    .input-wrap input:focus {
+      border-color: #E8001D;
+      box-shadow: 0 0 0 2px rgba(232,0,29,.1);
+    }
+    .input-wrap input::placeholder { color: #999999; }
     .toggle-pw {
       position: absolute;
       right: 10px; top: 50%;
       transform: translateY(-50%);
       background: none; border: none;
-      cursor: pointer; color: var(--text-muted);
-      font-size: 15px; padding: 2px;
-      line-height: 1;
+      cursor: pointer; color: #999999;
+      padding: 2px; line-height: 0;
+      display: flex; align-items: center;
     }
-    .toggle-pw:hover { color: var(--text); }
+    .toggle-pw svg { width: 16px; height: 16px; }
+    .toggle-pw:hover { color: #444444; }
     .input-wrap.has-toggle input { padding-right: 34px; }
     .form-hint {
       font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
+      color: #666666;
+      margin-top: 6px;
     }
 
-    /* ── Download section ────────────────────────────────────── */
+    /* ── Buttons ─────────────────────────────────────────────── */
     .download-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 20px;
     }
     .btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid transparent;
-      border-radius: 6px;
+      gap: 6px;
+      padding: 10px 24px;
+      background: #E8001D;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 4px;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       text-decoration: none;
       font-family: inherit;
-      transition: background 0.15s;
+      transition: background 0.1s;
       white-space: nowrap;
     }
-    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:hover { background: #C0001A; }
     .btn-secondary {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      background: var(--bg-subtle);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      gap: 6px;
+      padding: 9px 24px;
+      background: #FFFFFF;
+      color: #E8001D;
+      border: 1px solid #E8001D;
+      border-radius: 4px;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
       text-decoration: none;
       font-family: inherit;
-      transition: background 0.15s;
+      transition: background 0.1s;
       white-space: nowrap;
     }
-    .btn-secondary:hover { background: var(--bg); border-color: var(--border-strong); }
+    .btn-secondary:hover { background: #FFF0F2; }
 
     /* ── Install guide ───────────────────────────────────────── */
     .install-guide { display: none; }
@@ -282,13 +236,13 @@
       counter-increment: guide-step;
       display: flex;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .guide-steps li::before {
       content: counter(guide-step);
       flex-shrink: 0;
       width: 22px; height: 22px;
-      background: var(--accent);
+      background: #E8001D;
       color: #fff;
       border-radius: 50%;
       font-size: 11px;
@@ -296,26 +250,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 1px;
+      margin-top: 2px;
     }
-    .guide-steps li .step-content { flex: 1; }
-    .guide-steps li .step-label {
-      font-weight: 600;
-      color: var(--text);
+    .step-content { flex: 1; }
+    .step-label {
+      font-weight: 700;
+      color: #222222;
       margin-bottom: 4px;
+      font-size: 14px;
     }
-    .guide-steps li .step-desc {
+    .step-desc {
       font-size: 13px;
-      color: var(--text-muted);
+      color: #666666;
+      line-height: 1.6;
     }
     pre.code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 14px;
-      font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+      background: #F2F2F2;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: "Consolas", "Courier New", monospace;
       font-size: 12.5px;
-      color: var(--text);
+      color: #222222;
       margin-top: 6px;
       overflow-x: auto;
       position: relative;
@@ -323,104 +279,94 @@
     .copy-snippet {
       position: absolute;
       top: 6px; right: 8px;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      border-radius: 4px;
+      background: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      border-radius: 2px;
       padding: 2px 8px;
       font-size: 11px;
       cursor: pointer;
-      color: var(--text-muted);
+      color: #666666;
       font-family: inherit;
     }
-    .copy-snippet:hover { color: var(--text); border-color: var(--border-strong); }
+    .copy-snippet:hover { color: #E8001D; border-color: #E8001D; }
 
     /* ── Callout ─────────────────────────────────────────────── */
     .callout {
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 12px 16px;
       margin-top: 16px;
       font-size: 13px;
     }
     .callout-warning {
-      background: var(--warning-bg);
-      border: 1px solid var(--warning-border);
-      color: var(--warning-text);
+      background: #FFF3E0;
+      border: 1px solid #FFCC80;
+      color: #F57C00;
     }
     .callout-info {
-      background: var(--info-bg);
-      border: 1px solid var(--info-border);
-      color: var(--info-text);
+      background: #FFF0F2;
+      border: 1px solid #E8001D;
+      color: #C0001A;
     }
-    .callout strong { display: block; margin-bottom: 6px; }
+    .callout strong { display: block; margin-bottom: 4px; font-weight: 700; }
     .callout pre.code-block {
-      background: rgba(0,0,0,.05);
-      border-color: rgba(0,0,0,.08);
+      background: rgba(0,0,0,.04);
+      border-color: rgba(0,0,0,.1);
       color: inherit;
       margin-top: 8px;
     }
 
-    /* ── Security / footer ───────────────────────────────────── */
+    /* ── Security box ────────────────────────────────────────── */
     .security-box {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px 20px;
-      margin-top: 20px;
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-top: 16px;
     }
     .security-box h3 {
       font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: #444444;
       margin-bottom: 8px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid #E0E0E0;
+      padding-bottom: 6px;
     }
     .security-box p {
       font-size: 13px;
-      color: var(--text-muted);
+      color: #666666;
       margin-bottom: 4px;
     }
+
+    /* ── Footer ──────────────────────────────────────────────── */
     footer {
       text-align: center;
-      padding: 20px 40px 30px;
+      padding: 20px 24px 30px;
       font-size: 12px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
+      color: #999999;
+      border-top: 1px solid #E0E0E0;
+      margin-top: 32px;
     }
-    footer a { color: var(--text-link); text-decoration: none; }
+    footer a { color: #0066CC; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-
-    /* ── Version badge ───────────────────────────────────────── */
-    .version-tag {
-      display: inline-block;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1px 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
 
     /* ── Toast ───────────────────────────────────────────────── */
     #toast {
       position: fixed;
       bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #323232;
+      background: #222222;
       color: #fff;
       padding: 9px 18px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 13px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s, transform 0.2s;
       z-index: 9999;
     }
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -432,16 +378,14 @@
     <p>Claude에서 자연어로 로또를 구매하고 당첨번호를 확인하세요</p>
   </div>
   <div class="header-links">
-    <span id="version-display" class="version-tag">버전 확인 중…</span>
-    <a href="https://github.com/Torres-09/dhlottery-mcp" target="_blank">
-      ⭐ GitHub
-    </a>
+    <span id="version-display" class="version-badge">버전 확인 중…</span>
+    <a href="https://github.com/Torres-09/dhlottery-mcp" target="_blank">⭐ GitHub</a>
   </div>
 </header>
 
 <main>
 
-  <!-- Step 1: OS 선택 -->
+  <!-- Step 1 -->
   <div class="step-card">
     <div class="step-header">
       <span class="step-badge">STEP 1</span>
@@ -449,23 +393,34 @@
     </div>
     <div class="step-body">
       <div class="os-buttons">
+        <!-- Apple logo -->
         <button class="os-btn" data-os="darwin_arm64" onclick="selectOS(this)">
-          <span class="os-emoji">🍎</span>
+          <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.54 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.029 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+          </svg>
           <span class="os-name">macOS</span>
           <span class="os-arch">Apple Silicon (M1·M2·M3)</span>
         </button>
         <button class="os-btn" data-os="darwin_amd64" onclick="selectOS(this)">
-          <span class="os-emoji">🍎</span>
+          <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.54 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.029 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+          </svg>
           <span class="os-name">macOS</span>
           <span class="os-arch">Intel (x86_64)</span>
         </button>
+        <!-- Linux (Tux) - simple-icons 공식 경로 -->
         <button class="os-btn" data-os="linux_amd64" onclick="selectOS(this)">
-          <span class="os-emoji">🐧</span>
+          <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/>
+          </svg>
           <span class="os-name">Linux</span>
           <span class="os-arch">x86_64</span>
         </button>
+        <!-- Windows logo -->
         <button class="os-btn" data-os="windows_amd64" onclick="selectOS(this)">
-          <span class="os-emoji">🪟</span>
+          <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.801"/>
+          </svg>
           <span class="os-name">Windows</span>
           <span class="os-arch">x86_64</span>
         </button>
@@ -473,11 +428,11 @@
     </div>
   </div>
 
-  <!-- Step 2: 계정 정보 -->
+  <!-- Step 2 -->
   <div class="step-card">
     <div class="step-header">
       <span class="step-badge">STEP 2</span>
-      <span class="step-title">계정 정보 입력 <span style="font-weight:400;font-size:13px;color:var(--text-muted)">(선택 사항)</span></span>
+      <span class="step-title">계정 정보 입력 <span style="font-weight:400;font-size:13px;color:#666666">(선택 사항)</span></span>
     </div>
     <div class="step-body">
       <div class="form-row">
@@ -486,7 +441,18 @@
         </div>
         <div class="input-wrap has-toggle">
           <input type="password" id="userPw" placeholder="동행복권 비밀번호" autocomplete="current-password">
-          <button class="toggle-pw" onclick="togglePw()" title="비밀번호 표시/숨김" type="button">👁</button>
+          <button class="toggle-pw" id="toggle-pw-btn" onclick="togglePw()" type="button" title="표시/숨김">
+            <!-- eye-open (기본) -->
+            <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <!-- eye-off (비밀번호 표시 중) -->
+            <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
         </div>
       </div>
       <p class="form-hint">
@@ -496,7 +462,7 @@
     </div>
   </div>
 
-  <!-- Step 3: 다운로드 -->
+  <!-- Step 3 -->
   <div class="step-card">
     <div class="step-header">
       <span class="step-badge">STEP 3</span>
@@ -513,93 +479,78 @@
         </button>
       </div>
 
-      <!-- macOS guide -->
+      <!-- macOS ARM -->
       <div id="guide-darwin_arm64" class="install-guide">
         <ol class="guide-steps">
           <li>
             <div class="step-content">
-              <div class="step-label">압축 해제</div>
-              <div class="step-desc">다운로드한 <code>dhlottery-mcp_darwin_arm64.tar.gz</code> 를 더블클릭하거나 아래 명령어로 해제하세요.</div>
-              <pre class="code-block">tar xzf dhlottery-mcp_darwin_arm64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">바이너리 다운로드 후 압축 해제</div>
+              <div class="step-desc">위 "바이너리 다운로드" 버튼 클릭 → 다운로드된 <code>.tar.gz</code> 파일 <strong>더블클릭</strong>으로 압축 해제<br>
+              같은 폴더에 <code>dhlottery-mcp</code> 파일이 생깁니다.</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">바이너리 이동</div>
-              <pre class="code-block">mkdir -p ~/.local/bin
-mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">실행 권한 부여 (터미널에서 1회만)</div>
+              <div class="step-desc"><strong>Spotlight(⌘+Space)</strong>에서 "터미널" 검색 후 열고, 아래 명령어를 붙여넣고 Enter:</div>
+              <pre class="code-block">chmod +x ~/Downloads/dhlottery-mcp<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">PATH 확인 (필요한 경우)</div>
-              <div class="step-desc"><code>~/.local/bin</code>이 PATH에 없다면 셸 설정 파일에 추가하세요.</div>
-              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
-            </div>
-          </li>
-          <li>
-            <div class="step-content">
-              <div class="step-label">설정 파일 다운로드 (STEP 3 버튼)</div>
-              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼을 클릭하면 <code>claude_desktop_config.json</code>이 다운로드됩니다.</div>
+              <div class="step-label">설정 파일 다운로드</div>
+              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼 클릭 → <code>claude_desktop_config.json</code> 다운로드</div>
             </div>
           </li>
           <li>
             <div class="step-content">
               <div class="step-label">설정 파일을 Claude 설정 폴더에 복사</div>
-              <div class="step-desc">기존 파일이 없다면 아래 명령어를 실행하세요.</div>
-              <pre class="code-block">mkdir -p ~/Library/Application\ Support/Claude
-cp ~/Downloads/claude_desktop_config.json ~/Library/Application\ Support/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
-            </div>
-          </li>
-          <li>
-            <div class="step-content">
-              <div class="step-label">경로 교체</div>
-              <div class="step-desc"><code>claude_desktop_config.json</code> 안의 <code>YOUR_HOME_PATH</code> 부분을 실제 홈 경로로 바꾸세요.</div>
-              <pre class="code-block">sed -i '' "s|YOUR_HOME_PATH|$HOME|g" ~/Library/Application\ Support/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-desc">Finder에서 <strong>⌘+Shift+G</strong>를 누르고 아래 경로를 붙여넣은 뒤 이동:</div>
+              <pre class="code-block">~/Library/Application Support/Claude<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-desc" style="margin-top:6px">폴더가 없으면 새로 만드세요. 다운로드한 설정 파일을 이 폴더에 <strong>복사</strong>합니다.</div>
             </div>
           </li>
           <li>
             <div class="step-content">
               <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
-              <div class="step-desc">메뉴바에서 완전히 종료(Cmd+Q)한 뒤 다시 실행하세요.</div>
+              <div class="step-desc">메뉴 막대에서 Claude 아이콘 우클릭 → <strong>Quit Claude</strong> 또는 <strong>⌘+Q</strong> 후 재시작</div>
             </div>
           </li>
         </ol>
+        <div class="callout callout-warning">
+          <strong>⚠️ 보안 경고가 뜨는 경우</strong>
+          시스템 환경설정 → 개인 정보 보호 및 보안 → "확인 없이 허용" 클릭
+        </div>
       </div>
 
-      <!-- macOS Intel (same steps, different filename) -->
+      <!-- macOS Intel -->
       <div id="guide-darwin_amd64" class="install-guide">
         <ol class="guide-steps">
           <li>
             <div class="step-content">
-              <div class="step-label">압축 해제</div>
-              <pre class="code-block">tar xzf dhlottery-mcp_darwin_amd64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">바이너리 다운로드 후 압축 해제</div>
+              <div class="step-desc">위 "바이너리 다운로드" 버튼 클릭 → 다운로드된 <code>.tar.gz</code> 파일 <strong>더블클릭</strong>으로 압축 해제</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">바이너리 이동</div>
-              <pre class="code-block">mkdir -p ~/.local/bin
-mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">실행 권한 부여 (터미널에서 1회만)</div>
+              <div class="step-desc"><strong>Spotlight(⌘+Space)</strong>에서 "터미널" 검색 후 열고 아래 명령어 실행:</div>
+              <pre class="code-block">chmod +x ~/Downloads/dhlottery-mcp<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">PATH 확인 (필요한 경우)</div>
-              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일 다운로드</div>
+              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼 클릭</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">설정 파일 다운로드 후 Claude 설정 폴더에 복사</div>
-              <pre class="code-block">mkdir -p ~/Library/Application\ Support/Claude
-cp ~/Downloads/claude_desktop_config.json ~/Library/Application\ Support/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
-            </div>
-          </li>
-          <li>
-            <div class="step-content">
-              <div class="step-label">경로 교체</div>
-              <pre class="code-block">sed -i '' "s|YOUR_HOME_PATH|$HOME|g" ~/Library/Application\ Support/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일을 Claude 설정 폴더에 복사</div>
+              <div class="step-desc">Finder에서 <strong>⌘+Shift+G</strong> 후 아래 경로 붙여넣기:</div>
+              <pre class="code-block">~/Library/Application Support/Claude<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-desc" style="margin-top:6px">다운로드한 설정 파일을 이 폴더에 복사합니다.</div>
             </div>
           </li>
           <li>
@@ -608,41 +559,38 @@ cp ~/Downloads/claude_desktop_config.json ~/Library/Application\ Support/Claude/
             </div>
           </li>
         </ol>
+        <div class="callout callout-warning">
+          <strong>⚠️ 보안 경고가 뜨는 경우</strong>
+          시스템 환경설정 → 개인 정보 보호 및 보안 → "확인 없이 허용" 클릭
+        </div>
       </div>
 
-      <!-- Linux guide -->
+      <!-- Linux -->
       <div id="guide-linux_amd64" class="install-guide">
         <ol class="guide-steps">
           <li>
             <div class="step-content">
-              <div class="step-label">압축 해제</div>
-              <pre class="code-block">tar xzf dhlottery-mcp_linux_amd64.tar.gz<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">바이너리 다운로드 후 압축 해제</div>
+              <div class="step-desc">위 "바이너리 다운로드" 버튼 클릭 → 파일 관리자에서 <code>.tar.gz</code> 우클릭 → "여기에 압축 풀기"</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">바이너리 이동</div>
-              <pre class="code-block">mkdir -p ~/.local/bin
-mv dhlottery-mcp ~/.local/bin/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">실행 권한 부여</div>
+              <div class="step-desc">터미널에서 아래 명령어 실행:</div>
+              <pre class="code-block">chmod +x ~/Downloads/dhlottery-mcp<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">PATH 확인 (필요한 경우)</div>
-              <pre class="code-block">echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일 다운로드</div>
+              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼 클릭</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">설정 파일 다운로드 후 Claude 설정 폴더에 복사</div>
-              <pre class="code-block">mkdir -p ~/.config/Claude
-cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
-            </div>
-          </li>
-          <li>
-            <div class="step-content">
-              <div class="step-label">경로 교체</div>
-              <pre class="code-block">sed -i "s|YOUR_HOME_PATH|$HOME|g" ~/.config/Claude/claude_desktop_config.json<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일을 Claude 설정 폴더에 복사</div>
+              <div class="step-desc">파일 관리자에서 <code>~/.config/Claude/</code> 폴더로 이동 후 설정 파일 복사<br>(폴더가 없으면 새로 만드세요)</div>
             </div>
           </li>
           <li>
@@ -653,51 +601,55 @@ cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-s
         </ol>
       </div>
 
-      <!-- Windows guide -->
+      <!-- Windows -->
       <div id="guide-windows_amd64" class="install-guide">
         <ol class="guide-steps">
           <li>
             <div class="step-content">
-              <div class="step-label">압축 해제</div>
-              <div class="step-desc">다운로드한 <code>dhlottery-mcp_windows_amd64.zip</code>을 우클릭 → "모두 압축 풀기"</div>
+              <div class="step-label">바이너리 다운로드 후 압축 해제</div>
+              <div class="step-desc">위 "바이너리 다운로드" 버튼 클릭 → 다운로드된 <code>.zip</code> 파일 <strong>우클릭 → "모두 압축 풀기"</strong><br>
+              압축 해제 폴더에 <code>dhlottery-mcp.exe</code>가 생깁니다.</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">바이너리 이동</div>
-              <div class="step-desc">압축을 푼 <code>dhlottery-mcp.exe</code>를 원하는 위치로 이동합니다.</div>
-              <pre class="code-block">%LOCALAPPDATA%\Programs\dhlottery-mcp\<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일 다운로드</div>
+              <div class="step-desc">위 "설정 파일 생성 및 다운로드" 버튼 클릭</div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">설정 파일 위치 확인</div>
-              <div class="step-desc">아래 경로의 폴더가 없다면 만들어 주세요.</div>
-              <pre class="code-block">%APPDATA%\Claude\<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일의 경로 수정</div>
+              <div class="step-desc">
+                다운로드한 <code>claude_desktop_config.json</code>을 <strong>메모장</strong>으로 열어<br>
+                <code>사용자명</code> 부분을 본인의 Windows 사용자 이름으로 바꾸세요.<br>
+                <span style="color:#999">(예: <code>C:\Users\<strong>홍길동</strong>\Downloads\dhlottery-mcp.exe</code>)</span>
+              </div>
             </div>
           </li>
           <li>
             <div class="step-content">
-              <div class="step-label">설정 파일 복사 및 경로 편집</div>
-              <div class="step-desc">다운로드한 <code>claude_desktop_config.json</code>을 <code>%APPDATA%\Claude\</code>에 복사한 뒤, 텍스트 편집기로 열어 <code>YOUR_HOME_PATH</code>를 실제 경로로 교체하세요.</div>
-              <pre class="code-block">C:\Users\사용자명\AppData\Local\Programs\dhlottery-mcp\dhlottery-mcp.exe<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-label">설정 파일을 Claude 설정 폴더에 복사</div>
+              <div class="step-desc"><strong>Win+R</strong>을 누르고 아래를 붙여넣은 뒤 확인:</div>
+              <pre class="code-block">%APPDATA%\Claude<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+              <div class="step-desc" style="margin-top:6px">폴더가 없으면 새로 만드세요. 수정한 설정 파일을 이 폴더에 <strong>복사</strong>합니다.</div>
             </div>
           </li>
           <li>
             <div class="step-content">
               <div class="step-label">Claude Desktop 완전 종료 후 재시작</div>
-              <div class="step-desc">트레이 아이콘 우클릭 → 종료 후 다시 실행하세요.</div>
+              <div class="step-desc">트레이 아이콘 우클릭 → <strong>종료</strong> 후 재시작</div>
             </div>
           </li>
         </ol>
       </div>
 
-      <!-- 기존 설정 파일 callout -->
+      <!-- 기존 설정 파일 병합 안내 -->
       <div id="callout-merge" class="callout callout-warning" style="display:none;">
         <strong>⚠️ 기존 claude_desktop_config.json이 있다면?</strong>
         다운로드한 파일로 덮어쓰면 기존 MCP 서버 설정이 사라집니다.
         기존 파일의 <code>"mcpServers"</code> 안에 아래 항목만 추가하세요.
-        <pre class="code-block" id="merge-snippet">{  }<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
+        <pre class="code-block" id="merge-snippet">{ }<button class="copy-snippet" onclick="copySnippet(this)">복사</button></pre>
       </div>
 
     </div>
@@ -725,54 +677,28 @@ cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-s
 <div id="toast"></div>
 
 <script>
-  // ── State ─────────────────────────────────────────────────────────────
   let selectedOS = null;
   let latestVersion = null;
   const REPO = 'Torres-09/dhlottery-mcp';
 
-  // ── Init ──────────────────────────────────────────────────────────────
   (async function init() {
-    detectOS();
     await fetchLatestVersion();
   })();
-
-  // ── OS Detection ──────────────────────────────────────────────────────
-  function detectOS() {
-    const ua = navigator.userAgent.toLowerCase();
-    let detected;
-    if (ua.includes('win')) {
-      detected = 'windows_amd64';
-    } else if (ua.includes('mac')) {
-      // Apple Silicon 감지: userAgentData or heuristic
-      const isAppleSilicon =
-        (navigator.userAgentData && navigator.userAgentData.platform === 'macOS' &&
-         window.matchMedia('(max-device-pixel-ratio: 2)').matches) ||
-        ua.includes('arm') || ua.includes('aarch');
-      detected = isAppleSilicon ? 'darwin_arm64' : 'darwin_amd64';
-    } else {
-      detected = 'linux_amd64';
-    }
-    const btn = document.querySelector(`[data-os="${detected}"]`);
-    if (btn) selectOS(btn);
-  }
 
   function selectOS(btn) {
     document.querySelectorAll('.os-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     selectedOS = btn.dataset.os;
 
-    // 설치 가이드 표시
     document.querySelectorAll('.install-guide').forEach(g => g.classList.remove('visible'));
     const guide = document.getElementById('guide-' + selectedOS);
     if (guide) guide.classList.add('visible');
 
-    // merge callout 표시
     document.getElementById('callout-merge').style.display = 'block';
     updateMergeSnippet();
     updateDownloadButton();
   }
 
-  // ── GitHub API ────────────────────────────────────────────────────────
   async function fetchLatestVersion() {
     const display = document.getElementById('version-display');
     try {
@@ -781,37 +707,30 @@ cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-s
       });
       if (!res.ok) throw new Error('API error');
       const data = await res.json();
-      latestVersion = data.tag_name; // e.g. "v1.2.0"
+      latestVersion = data.tag_name;
       display.textContent = latestVersion;
       updateDownloadButton();
     } catch {
       latestVersion = null;
       display.textContent = '버전 조회 실패';
-      display.title = 'GitHub API 호출에 실패했습니다. Releases 페이지를 직접 확인하세요.';
     }
-  }
-
-  function getBinaryFilename() {
-    if (!selectedOS) return null;
-    const ext = selectedOS.startsWith('windows') ? '.zip' : '.tar.gz';
-    return `dhlottery-mcp_${selectedOS}${ext}`;
   }
 
   function updateDownloadButton() {
     const btn = document.getElementById('btn-download-binary');
     if (!selectedOS) {
-      btn.textContent = '⬇ OS를 먼저 선택하세요';
+      btn.innerHTML = '⬇ 바이너리 다운로드';
       btn.href = '#';
       return;
     }
-    const filename = getBinaryFilename();
+    const ext = selectedOS.startsWith('windows') ? '.zip' : '.tar.gz';
+    const filename = `dhlottery-mcp_${selectedOS}${ext}`;
     if (latestVersion) {
-      const url = `https://github.com/${REPO}/releases/download/${latestVersion}/${filename}`;
-      btn.href = url;
-      btn.innerHTML = `⬇ 바이너리 다운로드 <span style="opacity:.8;font-size:12px">(${latestVersion})</span>`;
+      btn.href = `https://github.com/${REPO}/releases/download/${latestVersion}/${filename}`;
+      btn.innerHTML = `⬇ 바이너리 다운로드 <span style="font-weight:400;font-size:12px">(${latestVersion})</span>`;
     } else {
       btn.href = `https://github.com/${REPO}/releases/latest`;
-      btn.textContent = '⬇ GitHub Releases에서 다운로드';
+      btn.innerHTML = '⬇ GitHub Releases에서 다운로드';
       btn.target = '_blank';
     }
   }
@@ -820,99 +739,73 @@ cp ~/Downloads/claude_desktop_config.json ~/.config/Claude/<button class="copy-s
     if (!selectedOS) {
       e.preventDefault();
       showToast('OS를 먼저 선택해 주세요.');
-      return;
-    }
-    if (!latestVersion) {
-      // href already points to releases/latest, let it open
     }
   }
 
-  // ── Config generation ─────────────────────────────────────────────────
   function buildConfig() {
     // NOTE: 입력값은 이 함수 내에서만 사용되며 서버로 전송되지 않습니다.
     const userId = document.getElementById('userId').value.trim();
     const userPw = document.getElementById('userPw').value;
-
-    let binaryPath;
-    if (selectedOS && selectedOS.startsWith('windows')) {
-      binaryPath = 'YOUR_HOME_PATH\\AppData\\Local\\Programs\\dhlottery-mcp\\dhlottery-mcp.exe';
-    } else {
-      binaryPath = 'YOUR_HOME_PATH/.local/bin/dhlottery-mcp';
-    }
-
+    const binaryPath = selectedOS && selectedOS.startsWith('windows')
+      ? 'C:\\Users\\사용자명\\Downloads\\dhlottery-mcp.exe'
+      : '~/Downloads/dhlottery-mcp';
     return {
       mcpServers: {
         dhlottery: {
           command: binaryPath,
-          env: {
-            DHLOTTERY_USER_ID: userId,
-            DHLOTTERY_USER_PW: userPw
-          }
+          env: { DHLOTTERY_USER_ID: userId, DHLOTTERY_USER_PW: userPw }
         }
       }
     };
   }
 
   function downloadConfig() {
-    if (!selectedOS) {
-      showToast('OS를 먼저 선택해 주세요.');
-      return;
-    }
-
-    const config = buildConfig();
-    const content = JSON.stringify(config, null, 2);
-
+    if (!selectedOS) { showToast('OS를 먼저 선택해 주세요.'); return; }
+    const content = JSON.stringify(buildConfig(), null, 2);
     // 브라우저 내에서만 파일 생성 — 서버 전송 없음
     const blob = new Blob([content], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'claude_desktop_config.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
+    a.href = url; a.download = 'claude_desktop_config.json';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
     showToast('설정 파일이 다운로드되었습니다.');
     updateMergeSnippet();
   }
 
   function updateMergeSnippet() {
-    const config = buildConfig();
-    const entry = config.mcpServers.dhlottery;
+    const entry = buildConfig().mcpServers.dhlottery;
     const snippet = `"dhlottery": ${JSON.stringify(entry, null, 2)}`;
     const pre = document.getElementById('merge-snippet');
-    // preserve the copy button
     const btn = pre.querySelector('button');
     pre.textContent = snippet;
     pre.appendChild(btn);
   }
 
-  // ── UI helpers ────────────────────────────────────────────────────────
   function togglePw() {
     const input = document.getElementById('userPw');
-    input.type = input.type === 'password' ? 'text' : 'password';
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    document.getElementById('icon-eye').style.display = isHidden ? 'none' : '';
+    document.getElementById('icon-eye-off').style.display = isHidden ? '' : 'none';
   }
 
   function copySnippet(btn) {
     const pre = btn.parentElement;
-    // text content without the button label
     const text = Array.from(pre.childNodes)
       .filter(n => n.nodeType === Node.TEXT_NODE)
-      .map(n => n.textContent)
-      .join('');
+      .map(n => n.textContent).join('');
     navigator.clipboard.writeText(text.trim()).then(() => {
-      const original = btn.textContent;
+      const orig = btn.textContent;
       btn.textContent = '✓';
-      setTimeout(() => { btn.textContent = original; }, 1500);
+      setTimeout(() => { btn.textContent = orig; }, 1500);
     });
   }
 
   let toastTimer;
   function showToast(msg) {
     const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.classList.add('show');
+    el.textContent = msg; el.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
   }
