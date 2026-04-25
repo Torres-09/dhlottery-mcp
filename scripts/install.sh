@@ -187,12 +187,16 @@ REGISTERED_ANY=false
 
 # Claude Code 등록
 if command -v claude &>/dev/null; then
-  if claude mcp add --scope user -t stdio "$BINARY" -- "$BINARY_PATH" 2>/dev/null; then
+  ENV_ARGS=()
+  if [ -n "$USER_ID" ] || [ -n "$USER_PW" ]; then
+    ENV_ARGS+=(-e "DHLOTTERY_USER_ID=$USER_ID" -e "DHLOTTERY_USER_PW=$USER_PW")
+  fi
+  if claude mcp add --scope user -t stdio "$BINARY" "${ENV_ARGS[@]}" -- "$BINARY_PATH" 2>/dev/null; then
     success "Claude Code에 등록 완료"
     REGISTERED_ANY=true
   else
     warn "Claude Code 등록에 실패했습니다. 수동으로 등록해주세요:"
-    info "  claude mcp add --scope user -t stdio $BINARY -- $BINARY_PATH"
+    info "  claude mcp add --scope user -t stdio $BINARY -e DHLOTTERY_USER_ID=<아이디> -e DHLOTTERY_USER_PW=<비밀번호> -- $BINARY_PATH"
   fi
 else
   warn "claude CLI를 찾을 수 없습니다. Claude Code 등록을 건너뜁니다."
