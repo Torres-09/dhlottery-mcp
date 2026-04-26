@@ -44,8 +44,11 @@ curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/script
 
 계정 정보 포함하여 설치 (한 번에 완료):
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash -s -- --id <아이디> --pw <비밀번호>
+curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash -s -- --id '아이디' --pw '비밀번호'
 ```
+
+> ⚠️ **아이디와 비밀번호는 반드시 작은따옴표(`'`)로 감싸세요.**
+> `$`, `!`, `~` 등 특수문자가 포함된 경우 따옴표 없이 입력하면 셸이 값을 변환하여 잘못된 정보가 저장됩니다.
 
 **Windows (PowerShell)**
 
@@ -56,7 +59,7 @@ irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/insta
 
 계정 정보 포함하여 설치 (한 번에 완료):
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1))) -Id <아이디> -Pw <비밀번호>
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1))) -Id '아이디' -Pw '비밀번호'
 ```
 
 ### Homebrew (macOS / Linux)
