@@ -62,10 +62,18 @@ fetch() {
 USER_ID=""
 USER_PW=""
 
+# 셸 환경에 따라 따옴표가 제거되지 않고 전달되는 경우 방어 처리
+strip_quotes() {
+  local v="$1"
+  v="${v#\'}" ; v="${v%\'}"   # 앞뒤 작은따옴표 제거
+  v="${v#\"}" ; v="${v%\"}"   # 앞뒤 큰따옴표 제거
+  printf '%s' "$v"
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
-    --id)   USER_ID="$2"; shift 2 ;;
-    --pw)   USER_PW="$2"; shift 2 ;;
+    --id)   USER_ID="$(strip_quotes "$2")"; shift 2 ;;
+    --pw)   USER_PW="$(strip_quotes "$2")"; shift 2 ;;
     --help|-h)
       echo "Usage: install.sh [--id <동행복권_아이디>] [--pw <동행복권_비밀번호>]"
       echo ""
