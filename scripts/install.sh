@@ -187,16 +187,34 @@ REGISTERED_ANY=false
 
 # Claude Code 등록
 if command -v claude &>/dev/null; then
-  ENV_ARGS=()
-  if [ -n "$USER_ID" ] || [ -n "$USER_PW" ]; then
-    ENV_ARGS+=(-e "DHLOTTERY_USER_ID=$USER_ID" -e "DHLOTTERY_USER_PW=$USER_PW")
-  fi
-  if claude mcp add --scope user -t stdio "$BINARY" "${ENV_ARGS[@]}" -- "$BINARY_PATH" 2>/dev/null; then
+  # 기존 항목이 있으면 제거 후 재등록 (업데이트 보장)
+  claude mcp remove "$BINARY" -s user 2>/dev/null || true
+
+  if claude mcp add --scope user -t stdio "$BINARY" -- "$BINARY_PATH" 2>/dev/null; then
+    # 환경변수는 $, !, ~ 등 특수문자를 안전하게 처리하기 위해 python3로 직접 주입
+    if [ -n "$USER_ID" ] || [ -n "$USER_PW" ]; then
+      CLAUDE_JSON="$HOME/.claude.json"
+      if [ -f "$CLAUDE_JSON" ] && command -v python3 &>/dev/null; then
+        python3 - "$CLAUDE_JSON" "$BINARY" "$USER_ID" "$USER_PW" <<'PYEOF'
+import sys, json
+path, binary, user_id, user_pw = sys.argv[1:5]
+with open(path) as f:
+    data = json.load(f)
+srv = data.get('mcpServers', {}).get(binary, {})
+srv.setdefault('env', {})
+srv['env']['DHLOTTERY_USER_ID'] = user_id
+srv['env']['DHLOTTERY_USER_PW'] = user_pw
+with open(path, 'w') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+    f.write('\n')
+PYEOF
+      fi
+    fi
     success "Claude Code에 등록 완료"
     REGISTERED_ANY=true
   else
     warn "Claude Code 등록에 실패했습니다. 수동으로 등록해주세요:"
-    info "  claude mcp add --scope user -t stdio $BINARY -e DHLOTTERY_USER_ID=<아이디> -e DHLOTTERY_USER_PW=<비밀번호> -- $BINARY_PATH"
+    info "  claude mcp add --scope user -t stdio $BINARY -- $BINARY_PATH"
   fi
 else
   warn "claude CLI를 찾을 수 없습니다. Claude Code 등록을 건너뜁니다."
