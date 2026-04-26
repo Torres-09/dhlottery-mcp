@@ -65,8 +65,11 @@ USER_PW=""
 # 셸 환경에 따라 따옴표가 제거되지 않고 전달되는 경우 방어 처리
 strip_quotes() {
   local v="$1"
-  v="${v#\'}" ; v="${v%\'}"   # 앞뒤 작은따옴표 제거
+  v="${v#\'}" ; v="${v%\'}"   # 앞뒤 ASCII 작은따옴표 제거
   v="${v#\"}" ; v="${v%\"}"   # 앞뒤 큰따옴표 제거
+  # 유니코드 곡선 따옴표 제거 (복사·붙여넣기 시 자동 변환 대응)
+  v="${v#$'\xe2\x80\x98'}" ; v="${v%$'\xe2\x80\x99'}"  # U+2018/U+2019
+  v="${v#$'\xe2\x80\x9c'}" ; v="${v%$'\xe2\x80\x9d'}"  # U+201C/U+201D
   printf '%s' "$v"
 }
 
@@ -206,6 +209,11 @@ if command -v claude &>/dev/null; then
         python3 - "$CLAUDE_JSON" "$BINARY" "$USER_ID" "$USER_PW" <<'PYEOF'
 import sys, json
 path, binary, user_id, user_pw = sys.argv[1:5]
+# 셸 환경에 따라 따옴표가 제거되지 않고 전달될 수 있으므로 방어적으로 제거
+# ASCII 따옴표 + 유니코드 곡선 따옴표(복사·붙여넣기 자동 변환) 모두 처리
+QUOTE_CHARS = "'\"\u2018\u2019\u201c\u201d"
+user_id = user_id.strip(QUOTE_CHARS)
+user_pw = user_pw.strip(QUOTE_CHARS)
 with open(path) as f:
     data = json.load(f)
 srv = data.get('mcpServers', {}).get(binary, {})
@@ -242,6 +250,10 @@ if [ -f "$DESKTOP_CONFIG" ]; then
 
   UPDATED=false
 
+  # 따옴표가 값에 포함된 경우를 방어적으로 제거 (python3 경로와 jq 경로 모두 적용)
+  USER_ID="$(strip_quotes "$USER_ID")"
+  USER_PW="$(strip_quotes "$USER_PW")"
+
   # jq가 있으면 jq로 편집
   if command -v jq &>/dev/null; then
     # 이미 등록되어 있으면 자격증명만 업데이트
@@ -276,8 +288,9 @@ import sys, json
 
 config_path = sys.argv[1]
 binary_path = sys.argv[2]
-user_id     = sys.argv[3]
-user_pw     = sys.argv[4]
+QUOTE_CHARS = "'\"\u2018\u2019\u201c\u201d"
+user_id     = sys.argv[3].strip(QUOTE_CHARS)
+user_pw     = sys.argv[4].strip(QUOTE_CHARS)
 
 with open(config_path, 'r') as f:
     config = json.load(f)
