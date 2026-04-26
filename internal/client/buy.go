@@ -338,7 +338,7 @@ func (c *Client) BuyLotto(round int, games []BuyGame) (*BuyResult, error) {
 				continue
 			}
 			n, err := strconv.Atoi(p)
-			if err == nil && n > 0 {
+			if err == nil && n >= 1 && n <= 45 {
 				nums = append(nums, n)
 			}
 		}
