@@ -194,6 +194,22 @@ echo ""
 # ============================================================
 echo -e "${BOLD}[4/4] MCP 클라이언트 등록 중...${RESET}"
 
+# --id/--pw 인자가 없으면 대화형으로 입력받음
+# /dev/tty로 터미널에 직접 접근하므로 curl | bash 파이프 환경에서도 동작
+# 이 방식은 $, !, ~ 등 특수문자가 쉘 확장 없이 그대로 전달됨
+if [ -z "$USER_ID" ] && [ -e /dev/tty ]; then
+  echo ""
+  echo "동행복권 계정 정보를 입력하면 구매·잔액 조회 기능을 바로 사용할 수 있습니다."
+  echo "(건너뛰려면 Enter를 누르세요)"
+  echo ""
+  printf "  아이디: "
+  read -r USER_ID </dev/tty || USER_ID=""
+  printf "  비밀번호: "
+  read -rs USER_PW </dev/tty || USER_PW=""
+  echo ""
+  echo ""
+fi
+
 REGISTERED_ANY=false
 
 # Claude Code 등록

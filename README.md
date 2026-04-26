@@ -37,18 +37,11 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 
 **macOS / Linux**
 
-계정 정보 없이 설치 (나중에 직접 설정):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash
 ```
 
-계정 정보 포함하여 설치 (한 번에 완료):
-```bash
-curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash -s -- --id '아이디' --pw '비밀번호'
-```
-
-> ⚠️ **아이디와 비밀번호는 반드시 작은따옴표(`'`)로 감싸세요.**
-> `$`, `!`, `~` 등 특수문자가 포함된 경우 따옴표 없이 입력하면 셸이 값을 변환하여 잘못된 정보가 저장됩니다.
+설치 중 동행복권 아이디·비밀번호를 대화형으로 입력할 수 있습니다. 비밀번호는 입력 시 화면에 표시되지 않으며, `$`, `!`, `~` 등 특수문자도 안전하게 처리됩니다.
 
 **Windows (PowerShell)**
 
