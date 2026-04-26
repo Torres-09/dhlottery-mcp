@@ -139,13 +139,50 @@ Write-Host ""
 # ============================================================
 Write-Host "[4/4] MCP 클라이언트 등록 중..." -ForegroundColor White
 
+# -Id/-Pw 파라미터가 없으면 대화형으로 입력받음
+if (-not $Id) {
+    Write-Host ""
+    Write-Host "동행복권 계정 정보를 입력하면 구매·잔액 조회 기능을 바로 사용할 수 있습니다."
+    Write-Host "(건너뛰려면 Enter를 누르세요)"
+    Write-Host ""
+    $Id = Read-Host "  아이디"
+    $securePw = Read-Host "  비밀번호" -AsSecureString
+    $Pw = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
+        [Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePw))
+    Write-Host ""
+}
+
 $REGISTERED_ANY = $false
 
 # Claude Code 등록
 $claudeExe = Get-Command "claude" -ErrorAction SilentlyContinue
 if ($claudeExe) {
+    # 기존 항목 제거 후 재등록 (업데이트 보장)
+    & claude mcp remove $BINARY -s user 2>$null
     try {
         & claude mcp add --scope user -t stdio $BINARY -- $destExe 2>$null
+
+        # 환경변수 주입: PowerShell JSON으로 .claude.json 직접 편집
+        if ($Id -or $Pw) {
+            $claudeJson = "$env:USERPROFILE\.claude.json"
+            if (Test-Path $claudeJson) {
+                try {
+                    $cdata = Get-Content $claudeJson -Raw -Encoding UTF8 | ConvertFrom-Json
+                    if ($cdata.mcpServers -and $cdata.mcpServers.PSObject.Properties[$BINARY]) {
+                        $srvEntry = $cdata.mcpServers.$BINARY
+                        if (-not $srvEntry.PSObject.Properties["env"]) {
+                            $srvEntry | Add-Member -MemberType NoteProperty -Name "env" -Value ([PSCustomObject]@{})
+                        }
+                        $srvEntry.env | Add-Member -MemberType NoteProperty -Name "DHLOTTERY_USER_ID" -Value $Id -Force
+                        $srvEntry.env | Add-Member -MemberType NoteProperty -Name "DHLOTTERY_USER_PW" -Value $Pw -Force
+                        $cdata | ConvertTo-Json -Depth 10 | Set-Content $claudeJson -Encoding UTF8
+                    }
+                } catch {
+                    Write-Warn "Claude Code 계정 정보 주입에 실패했습니다. 수동으로 설정해주세요."
+                }
+            }
+        }
+
         Write-Success "Claude Code에 등록 완료"
         $REGISTERED_ANY = $true
     } catch {

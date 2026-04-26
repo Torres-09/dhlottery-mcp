@@ -45,15 +45,11 @@ curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/script
 
 **Windows (PowerShell)**
 
-계정 정보 없이 설치 (나중에 직접 설정):
 ```powershell
 irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1 | iex
 ```
 
-계정 정보 포함하여 설치 (한 번에 완료):
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1))) -Id '아이디' -Pw '비밀번호'
-```
+설치 중 동행복권 아이디·비밀번호를 대화형으로 입력할 수 있습니다. 비밀번호는 입력 시 화면에 표시되지 않습니다.
 
 ### Homebrew (macOS / Linux)
 
