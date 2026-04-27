@@ -29,11 +29,9 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 
 👉 **[https://torres-09.github.io/dhlottery-mcp](https://torres-09.github.io/dhlottery-mcp)**
 
----
+### 원클릭 설치
 
-### 원클릭 설치 (권장)
-
-바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다.
+바이너리 설치 후 Claude Code와 Claude Desktop에 자동 등록까지 진행합니다. 설치 중 계정 정보를 대화형으로 입력할 수 있습니다.
 
 **macOS / Linux**
 
@@ -41,15 +39,11 @@ Claude에서 자연어로 로또 당첨번호를 조회하고, 예치금을 확�
 curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.sh | bash
 ```
 
-설치 중 동행복권 아이디·비밀번호를 대화형으로 입력할 수 있습니다. 비밀번호는 입력 시 화면에 표시되지 않으며, `$`, `!`, `~` 등 특수문자도 안전하게 처리됩니다.
-
 **Windows (PowerShell)**
 
 ```powershell
 irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/install.ps1 | iex
 ```
-
-설치 중 동행복권 아이디·비밀번호를 대화형으로 입력할 수 있습니다. 비밀번호는 입력 시 화면에 표시되지 않습니다.
 
 ### Homebrew (macOS / Linux)
 
@@ -61,54 +55,10 @@ brew install Torres-09/tap/dhlottery-mcp
 
 ```bash
 go install github.com/Torres-09/dhlottery-mcp/cmd/dhlottery-mcp@latest
-```
-
-설치 후 Claude Code에 등록:
-
-```bash
 claude mcp add --scope user -t stdio dhlottery-mcp -- dhlottery-mcp
 ```
 
-### 직접 다운로드
-
-[GitHub Releases](https://github.com/Torres-09/dhlottery-mcp/releases)에서 운영체제에 맞는 파일을 다운로드하세요.
-
-```bash
-# macOS (Apple Silicon)
-curl -L https://github.com/Torres-09/dhlottery-mcp/releases/latest/download/dhlottery-mcp_darwin_arm64.tar.gz | tar xz
-chmod +x dhlottery-mcp
-mv dhlottery-mcp ~/.local/bin/
-claude mcp add --scope user -t stdio dhlottery-mcp -- ~/.local/bin/dhlottery-mcp
-```
-
-```powershell
-# Windows (PowerShell)
-Invoke-WebRequest -Uri https://github.com/Torres-09/dhlottery-mcp/releases/latest/download/dhlottery-mcp_windows_amd64.zip -OutFile dhlottery-mcp.zip
-Expand-Archive dhlottery-mcp.zip .
-# dhlottery-mcp.exe를 PATH가 있는 디렉토리로 이동 후:
-claude mcp add --scope user -t stdio dhlottery-mcp -- C:\path\to\dhlottery-mcp.exe
-```
-
-### Docker
-
-```bash
-docker run --rm -i \
-  -e DHLOTTERY_USER_ID=<아이디> \
-  -e DHLOTTERY_USER_PW=<비밀번호> \
-  ghcr.io/Torres-09/dhlottery-mcp
-```
-
-### 소스에서 빌드
-
-```bash
-git clone https://github.com/Torres-09/dhlottery-mcp
-cd dhlottery-mcp
-go build -o dhlottery-mcp ./cmd/dhlottery-mcp
-```
-
 ## 제거
-
-### 원클릭 제거 (권장)
 
 **macOS / Linux**
 
@@ -122,26 +72,11 @@ curl -fsSL https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/script
 irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/uninstall.ps1 | iex
 ```
 
-### Homebrew
+**Homebrew**
 
 ```bash
 brew uninstall Torres-09/tap/dhlottery-mcp
 claude mcp remove "dhlottery-mcp" -s user
-```
-
-> Homebrew는 바이너리만 제거합니다. Claude Code/Desktop MCP 등록은 위 명령어로 별도 해제해야 합니다.
-
-### 수동 제거
-
-```bash
-# 바이너리 삭제
-rm -f ~/.local/bin/dhlottery-mcp
-
-# Claude Code MCP 해제
-claude mcp remove "dhlottery-mcp" -s user
-
-# Claude Desktop 설정에서 dhlottery 항목 직접 삭제
-# 설정 파일 위치는 아래 'Claude Desktop 설정' 섹션 참고
 ```
 
 ## 사용 예시
