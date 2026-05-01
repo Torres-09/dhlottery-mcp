@@ -14,9 +14,15 @@ import (
 var version = "dev"
 
 func main() {
-	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
-		fmt.Printf("dhlottery-mcp version %s\n", version)
-		os.Exit(0)
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "setup":
+			runSetup()
+			return
+		case "--version", "-v":
+			fmt.Printf("dhlottery-mcp version %s\n", version)
+			os.Exit(0)
+		}
 	}
 
 	cfg := config.Load()

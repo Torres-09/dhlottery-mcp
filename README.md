@@ -49,14 +49,19 @@ irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/insta
 
 ```bash
 brew install Torres-09/tap/dhlottery-mcp
+dhlottery-mcp setup
 ```
+
+설치 후 `dhlottery-mcp setup`을 실행하면 Claude Code, Claude Desktop, Codex에 자동 등록되고 계정 정보를 안전하게 입력할 수 있습니다.
 
 ### go install
 
 ```bash
 go install github.com/Torres-09/dhlottery-mcp/cmd/dhlottery-mcp@latest
-claude mcp add --scope user -t stdio dhlottery-mcp -- dhlottery-mcp
+dhlottery-mcp setup
 ```
+
+설치 후 `dhlottery-mcp setup`을 실행하면 Claude Code, Claude Desktop, Codex에 자동 등록됩니다.
 
 ## 제거
 
