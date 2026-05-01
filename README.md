@@ -80,8 +80,8 @@ irm https://raw.githubusercontent.com/Torres-09/dhlottery-mcp/main/scripts/unins
 **Homebrew**
 
 ```bash
+dhlottery-mcp unsetup
 brew uninstall Torres-09/tap/dhlottery-mcp
-claude mcp remove "dhlottery-mcp" -s user
 ```
 
 ## 사용 예시

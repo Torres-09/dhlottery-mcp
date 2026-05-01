@@ -276,3 +276,137 @@ func die(msg string) {
 	fmt.Fprintln(os.Stderr, "오류: "+msg)
 	os.Exit(1)
 }
+
+// ── unsetup ───────────────────────────────────────────────────────────────────
+
+func runUnsetup() {
+	fmt.Println()
+	fmt.Println("dhlottery-mcp 설정을 제거합니다.")
+	fmt.Println()
+
+	ok := false
+
+	if err := unsetupClaudeCode(); err != nil {
+		printSkip("Claude Code", err.Error())
+	} else {
+		printOK("Claude Code", "~/.claude.json")
+		ok = true
+	}
+
+	if err := unsetupClaudeDesktop(); err != nil {
+		printSkip("Claude Desktop", err.Error())
+	} else {
+		printOK("Claude Desktop", desktopConfigPath())
+		ok = true
+	}
+
+	if err := unsetupCodex(); err != nil {
+		printSkip("Codex", err.Error())
+	} else {
+		printOK("Codex (CLI·Desktop·IDE)", "~/.codex/config.toml")
+		ok = true
+	}
+
+	fmt.Println()
+	if ok {
+		fmt.Println("설정 제거가 완료되었습니다.")
+	} else {
+		fmt.Fprintln(os.Stderr, "제거할 설정을 찾지 못했습니다.")
+		os.Exit(1)
+	}
+	fmt.Println()
+}
+
+func unsetupClaudeCode() error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	path := filepath.Join(home, ".claude.json")
+
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	data := map[string]interface{}{}
+	if err := json.Unmarshal(b, &data); err != nil {
+		return err
+	}
+
+	servers, _ := data["mcpServers"].(map[string]interface{})
+	if servers == nil {
+		return fmt.Errorf("mcpServers 항목 없음")
+	}
+	if _, ok := servers["dhlottery-mcp"]; !ok {
+		return fmt.Errorf("dhlottery-mcp 항목 없음")
+	}
+
+	delete(servers, "dhlottery-mcp")
+	return writeJSON(path, data)
+}
+
+func unsetupClaudeDesktop() error {
+	path := desktopConfigPath()
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return fmt.Errorf("설정 파일 없음 (Claude Desktop 미설치)")
+	}
+
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	data := map[string]interface{}{}
+	if err := json.Unmarshal(b, &data); err != nil {
+		return err
+	}
+
+	servers, _ := data["mcpServers"].(map[string]interface{})
+	if servers == nil {
+		return fmt.Errorf("mcpServers 항목 없음")
+	}
+	if _, ok := servers["dhlottery"]; !ok {
+		return fmt.Errorf("dhlottery 항목 없음")
+	}
+
+	delete(servers, "dhlottery")
+	return writeJSON(path, data)
+}
+
+func unsetupCodex() error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	path := filepath.Join(home, ".codex", "config.toml")
+
+	b, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("config.toml 없음 (Codex 미설치)")
+		}
+		return err
+	}
+
+	raw := map[string]interface{}{}
+	if err := toml.Unmarshal(b, &raw); err != nil {
+		return fmt.Errorf("config.toml 파싱 실패: %w", err)
+	}
+
+	mcpServers, _ := raw["mcp_servers"].(map[string]interface{})
+	if mcpServers == nil {
+		return fmt.Errorf("mcp_servers 항목 없음")
+	}
+	if _, ok := mcpServers["dhlottery-mcp"]; !ok {
+		return fmt.Errorf("dhlottery-mcp 항목 없음")
+	}
+
+	delete(mcpServers, "dhlottery-mcp")
+
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	return toml.NewEncoder(f).Encode(raw)
+}

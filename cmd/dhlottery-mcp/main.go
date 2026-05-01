@@ -19,6 +19,9 @@ func main() {
 		case "setup":
 			runSetup()
 			return
+		case "unsetup":
+			runUnsetup()
+			return
 		case "--version", "-v":
 			fmt.Printf("dhlottery-mcp version %s\n", version)
 			os.Exit(0)
