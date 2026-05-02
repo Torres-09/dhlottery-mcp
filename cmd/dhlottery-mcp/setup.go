@@ -49,31 +49,39 @@ func runSetup() {
 	}
 
 	// 플래그로 제공되지 않은 항목만 대화형으로 입력
-	reader := bufio.NewReader(os.Stdin)
+	// curl | bash 파이프 환경에서는 stdin이 파이프라 /dev/tty로 직접 열어야 함
 	if userID == "" || userPW == "" {
-		fmt.Println("동행복권 계정 정보를 입력하면 구매·잔액 조회 기능을 사용할 수 있습니다.")
-		fmt.Println("(건너뛰려면 Enter를 누르세요)")
-		fmt.Println()
-	}
+		tty, ttyErr := os.OpenFile("/dev/tty", os.O_RDWR, 0)
+		if ttyErr != nil {
+			// /dev/tty 없음(CI 등): 계정 정보 없이 등록만 진행
+			fmt.Println("  ! 터미널을 찾을 수 없습니다. 계정 정보 없이 등록합니다.")
+			fmt.Println("  나중에 dhlottery-mcp setup을 직접 실행해 계정 정보를 설정하세요.")
+		} else {
+			defer tty.Close()
+			reader := bufio.NewReader(tty)
 
-	if userID == "" {
-		fmt.Print("  아이디: ")
-		userID, _ = reader.ReadString('\n')
-		userID = strings.TrimSpace(userID)
-	}
+			fmt.Println("동행복권 계정 정보를 입력하면 구매·잔액 조회 기능을 사용할 수 있습니다.")
+			fmt.Println("(건너뛰려면 Enter를 누르세요)")
+			fmt.Println()
 
-	if userPW == "" {
-		fmt.Print("  비밀번호: ")
-		pwBytes, err := term.ReadPassword(int(os.Stdin.Fd()))
-		if err != nil {
-			// ReadPassword 실패 시 일반 입력으로 fallback
-			fmt.Print("")
-			pw, _ := reader.ReadString('\n')
-			pwBytes = []byte(strings.TrimSpace(pw))
+			if userID == "" {
+				fmt.Fprint(tty, "  아이디: ")
+				userID, _ = reader.ReadString('\n')
+				userID = strings.TrimSpace(userID)
+			}
+
+			if userPW == "" {
+				fmt.Fprint(tty, "  비밀번호: ")
+				pwBytes, err := term.ReadPassword(int(tty.Fd()))
+				if err != nil {
+					pw, _ := reader.ReadString('\n')
+					pwBytes = []byte(strings.TrimSpace(pw))
+				}
+				userPW = string(pwBytes)
+				fmt.Fprintln(tty)
+				fmt.Fprintln(tty)
+			}
 		}
-		userPW = string(pwBytes)
-		fmt.Println()
-		fmt.Println()
 	}
 
 	// 각 클라이언트 등록
