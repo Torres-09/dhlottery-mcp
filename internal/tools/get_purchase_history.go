@@ -14,7 +14,7 @@ import (
 
 func RegisterGetPurchaseHistory(s *server.MCPServer, c *client.Client, cfg *config.Config) {
 	tool := mcp.NewTool("get_purchase_history",
-		mcp.WithDescription("로또 구매/당첨 내역을 조회합니다. 로그인이 필요합니다. 인터넷(PC/웹) 구매 내역만 조회되며, 모바일 앱 구매 내역은 포함되지 않습니다. 최대 조회 기간은 31일입니다. 미추첨(추첨 대기) 내역도 함께 조회됩니다."),
+		mcp.WithDescription("로또 구매/당첨 내역을 조회합니다. 로그인이 필요합니다. 인터넷(PC/웹) 구매 내역만 조회되며, 모바일 앱 구매 내역은 포함되지 않습니다. 최대 조회 기간은 31일입니다. 미추첨(추첨 대기) 내역도 함께 조회됩니다. 날짜 범위 지정 시 주의: 로또는 토요일 추첨이므로 '이번 주 구매'를 조회할 때 월요일 기준으로 잡으면 지난 토/일 구매분이 누락될 수 있습니다. 기간이 불명확하면 start_date를 7일 전으로 설정하거나 생략(기본 30일)하세요."),
 		mcp.WithString("start_date",
 			mcp.Description("조회 시작일 (YYYY-MM-DD 형식, 기본: 30일 전)"),
 		),
