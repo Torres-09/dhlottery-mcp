@@ -8,9 +8,12 @@ import (
 	"io"
 	"math/big"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"regexp"
 	"strings"
+
+	"golang.org/x/net/publicsuffix"
 )
 
 const (
@@ -30,6 +33,14 @@ func (c *Client) Login() error {
 	if c.userID == "" || c.userPW == "" {
 		return fmt.Errorf("로그인 자격증명이 설정되지 않았습니다. DHLOTTERY_USER_ID와 DHLOTTERY_USER_PW 환경변수를 설정해주세요")
 	}
+
+	// 재로그인 시 기존 쿠키를 초기화해 서버가 로그인 폼을 반환하도록 보장
+	// 구 세션 쿠키가 남아있으면 /login GET이 홈으로 리다이렉트되어 rsaModulus를 찾지 못함
+	freshJar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
+	if err != nil {
+		return fmt.Errorf("쿠키 초기화 실패: %w", err)
+	}
+	c.http.Jar = freshJar
 
 	// 1단계: www 도메인 로그인 페이지로 세션 쿠키 확보
 	// dhlottery.co.kr → www.dhlottery.co.kr 301 리다이렉트를 피하기 위해 www 직접 사용
