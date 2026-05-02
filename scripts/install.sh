@@ -201,6 +201,6 @@ SETUP_ARGS=()
 [ -n "$USER_ID" ] && SETUP_ARGS+=("--id" "$USER_ID")
 [ -n "$USER_PW" ] && SETUP_ARGS+=("--pw" "$USER_PW")
 
-"$BINARY_PATH" setup "${SETUP_ARGS[@]}"
+"$BINARY_PATH" setup ${SETUP_ARGS[@]+"${SETUP_ARGS[@]}"}
 
 echo ""
