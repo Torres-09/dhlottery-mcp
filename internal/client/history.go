@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -179,6 +180,10 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 		return nil, err
 	}
 
+	return c.getPurchaseHistory(startDate, endDate, true)
+}
+
+func (c *Client) getPurchaseHistory(startDate, endDate string, allowRetry bool) ([]Purchase, error) {
 	startFormatted := formatDateParam(startDate)
 	endFormatted := formatDateParam(endDate)
 
@@ -210,18 +215,26 @@ func (c *Client) GetPurchaseHistory(startDate, endDate string) ([]Purchase, erro
 	}
 	defer resp.Body.Close()
 
-	// 세션 만료 감지: 로그인 페이지로 리다이렉트된 경우
-	if resp.Request.URL.Path == "/login" || resp.Request.URL.Path == "/errorPage" {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("응답 읽기 실패: %w", err)
+	}
+
+	// 세션 만료 감지: 로그인 페이지로 리다이렉트되었거나, AJAX 세션 체크가
+	// 리다이렉트 없이 빈 응답을 반환하는 경우(만료된 쿠키로 요청한 경우) 모두 포함
+	sessionExpired := resp.Request.URL.Path == "/login" ||
+		resp.Request.URL.Path == "/errorPage" ||
+		len(bytes.TrimSpace(body)) == 0
+
+	if sessionExpired {
+		if !allowRetry {
+			return nil, fmt.Errorf("구매내역 조회 실패: 재로그인 후에도 세션이 유효하지 않습니다")
+		}
 		c.InvalidateSession()
 		if err := c.Login(); err != nil {
 			return nil, err
 		}
-		return c.GetPurchaseHistory(startDate, endDate)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("응답 읽기 실패: %w", err)
+		return c.getPurchaseHistory(startDate, endDate, false)
 	}
 
 	var apiResp ledgerAPIResponse

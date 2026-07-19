@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -27,7 +28,10 @@ func (c *Client) GetBalance() (*Balance, error) {
 	if err := c.EnsureLoggedIn(); err != nil {
 		return nil, err
 	}
+	return c.getBalance(true)
+}
 
+func (c *Client) getBalance(allowRetry bool) (*Balance, error) {
 	req, err := http.NewRequest(http.MethodGet, wwwBaseURL+"/mypage/selectUserMndp.do", nil)
 	if err != nil {
 		return nil, fmt.Errorf("요청 생성 실패: %w", err)
@@ -44,44 +48,32 @@ func (c *Client) GetBalance() (*Balance, error) {
 	}
 	defer resp.Body.Close()
 
-	// 세션 만료 감지: 로그인 페이지로 리다이렉트된 경우
-	if resp.Request.URL.Path == "/login" || resp.Request.URL.Path == "/errorPage" {
-		c.InvalidateSession()
-		if err := c.Login(); err != nil {
-			return nil, err
-		}
-		return c.fetchBalance()
-	}
-
-	return c.parseBalanceJSON(resp)
-}
-
-func (c *Client) fetchBalance() (*Balance, error) {
-	req, err := http.NewRequest(http.MethodGet, wwwBaseURL+"/mypage/selectUserMndp.do", nil)
-	if err != nil {
-		return nil, fmt.Errorf("요청 생성 실패: %w", err)
-	}
-	req.Header.Set("User-Agent", userAgent)
-	req.Header.Set("X-Requested-With", "XMLHttpRequest")
-	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
-	req.Header.Set("Referer", wwwBaseURL+"/mypage/home")
-	req.Header.Set("AJAX", "true")
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("예치금 재조회 요청 실패: %w", err)
-	}
-	defer resp.Body.Close()
-
-	return c.parseBalanceJSON(resp)
-}
-
-func (c *Client) parseBalanceJSON(resp *http.Response) (*Balance, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("응답 읽기 실패: %w", err)
 	}
 
+	// 세션 만료 감지: 로그인 페이지로 리다이렉트되었거나, AJAX 세션 체크가
+	// 리다이렉트 없이 빈 응답을 반환하는 경우(만료된 쿠키로 요청한 경우) 모두 포함
+	sessionExpired := resp.Request.URL.Path == "/login" ||
+		resp.Request.URL.Path == "/errorPage" ||
+		len(bytes.TrimSpace(body)) == 0
+
+	if sessionExpired {
+		if !allowRetry {
+			return nil, fmt.Errorf("예치금 조회 실패: 재로그인 후에도 세션이 유효하지 않습니다")
+		}
+		c.InvalidateSession()
+		if err := c.Login(); err != nil {
+			return nil, err
+		}
+		return c.getBalance(false)
+	}
+
+	return c.parseBalanceJSON(body)
+}
+
+func (c *Client) parseBalanceJSON(body []byte) (*Balance, error) {
 	var apiResp userMndpResponse
 	if err := json.Unmarshal(body, &apiResp); err != nil {
 		snippet := string(body)
